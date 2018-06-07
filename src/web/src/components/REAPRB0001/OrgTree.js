@@ -26,6 +26,7 @@ const Component = ({
             <Tree
               defaultExpandedKeys={['root']}
               showIcon
+              showLine
               onSelect={(selectedKeys, { selected, selectedNodes }) => {
                       dispatch({ type: 'REAPRB0001/select', selected: selected ? selectedNodes[0].props.data : null })
                     }}

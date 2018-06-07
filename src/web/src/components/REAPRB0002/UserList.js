@@ -213,22 +213,14 @@ const Component = ({
                 />
               </Item>
             </Col>
-
+            <Col md={8} sm={24}>
+              <Item {...formItemLayout}>
+                <Button type="primary" htmlType="button" icon="search" onClick={() => dispatch({ type: 'REAPRB0002/query', orgId: selected && selected.key })}>
+                  查询
+                </Button>
+              </Item>
+            </Col>
           </Row>
-          <div style={{ overflow: 'hidden' }}>
-            <span style={{ float: 'right', marginBottom: 24 }}>
-              <Button
-                type="primary"
-                htmlType="button"
-                icon="search"
-                onClick={
-                () => dispatch({ type: 'REAPRB0002/query', orgId: selected && selected.key })
-              }
-              >
-            查询
-              </Button>
-            </span>
-          </div>
         </Form>
       </Row>
       <Col>
