@@ -2,7 +2,15 @@ import React from 'react'
 import { Row, Col, Table, Popconfirm, Input, Form, Button } from 'antd'
 import EditableCell from '../EditableCell'
 import FunctionForm from './FunctionForm'
-import styles from './FunctionList.less'
+
+const formItemLayout = {
+  labelCol: {
+    span: 6,
+  },
+  wrapperCol: {
+    span: 16,
+  },
+}
 
 const Component = ({
   page, dispatch, showCreateModal, loading,
@@ -101,9 +109,9 @@ const Component = ({
 
   return (
     <Col>
-      <Row gutter={12} className={styles.searchForm}>
-        <Col span={4}>
-          <Item label="归属系统">
+      <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+        <Col span={6}>
+          <Item label="归属系统" {...formItemLayout}>
             <Input
               onChange={(e) => {
                 const { value } = e.target
@@ -117,8 +125,8 @@ const Component = ({
             />
           </Item>
         </Col>
-        <Col span={4}>
-          <Item label="名称">
+        <Col span={6}>
+          <Item label="名称" {...formItemLayout}>
             <Input
               onChange={(e) => {
                 const { value } = e.target
@@ -132,8 +140,8 @@ const Component = ({
             />
           </Item>
         </Col>
-        <Col span={4}>
-          <Item label="功能码">
+        <Col span={6}>
+          <Item label="功能码" {...formItemLayout}>
             <Input
               onChange={(e) => {
                 const { value } = e.target
@@ -147,8 +155,8 @@ const Component = ({
             />
           </Item>
         </Col>
-        <Col span={4} >
-          <Item>
+        <Col span={6}>
+          <Item {...formItemLayout}>
             <Button
               type="primary"
               htmlType="button"
@@ -162,10 +170,10 @@ const Component = ({
           </Item>
         </Col>
       </Row>
-      <Col>
+      <Row>
         <FunctionForm showCreateModal={showCreateModal} dispatch={dispatch} />
-      </Col>
-      <Col>
+      </Row>
+      <Row>
         <Table dataSource={page && page.content}
           pagination={{
             total: page && page.totalElements,
@@ -177,7 +185,7 @@ const Component = ({
           loading={loading}
           bordered
         />
-      </Col>
+      </Row>
     </Col>
   )
 }

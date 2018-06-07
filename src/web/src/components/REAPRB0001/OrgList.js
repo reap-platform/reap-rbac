@@ -1,9 +1,17 @@
 import React from 'react'
-import { Row, Col, Table, Popconfirm, Input, Form, Button } from 'antd'
+import { Row, Col, Table, Popconfirm, Input, Form, Button, Card } from 'antd'
 import moment from 'moment'
 import EditableCell from '../EditableCell'
 import OrgForm from './OrgForm'
-import styles from './OrgList.less'
+
+const formItemLayout = {
+  labelCol: {
+    span: 6,
+  },
+  wrapperCol: {
+    span: 16,
+  },
+}
 
 const Component = ({
   page, dispatch, showCreateModal, selected, loading,
@@ -77,12 +85,14 @@ const Component = ({
   ]
 
   return (
-    <Col span={18}>
-      <Row gutter={24} className={styles.searchForm}>
-        <Col span={6}>
-          <Item label="机构代码">
-            <Input
-              onChange={(e) => {
+    <Card bordered={false}>
+      <Row gutter={24}>
+        <Form>
+          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+            <Col md={8} sm={24}>
+              <Item label="机构代码" {...formItemLayout}>
+                <Input
+                  onChange={(e) => {
                 const { value } = e.target
                 dispatch({
                   type: 'REAPRB0001/setState',
@@ -91,13 +101,13 @@ const Component = ({
                   },
                 })
               }}
-            />
-          </Item>
-        </Col>
-        <Col span={6} >
-          <Item label="机构名称">
-            <Input
-              onChange={(e) => {
+                />
+              </Item>
+            </Col>
+            <Col md={8} sm={24}>
+              <Item label="机构名称" {...formItemLayout}>
+                <Input
+                  onChange={(e) => {
               const { value } = e.target
               dispatch({
                 type: 'REAPRB0001/setState',
@@ -106,24 +116,27 @@ const Component = ({
                 },
               })
             }}
-            />
-          </Item>
-        </Col>
-        <Col span={6} >
-          <Item>
-            <Button
-              type="primary"
-              htmlType="button"
-              icon="search"
-              onClick={
+                />
+              </Item>
+            </Col>
+            <Col md={8} sm={24}>
+              <Item {...formItemLayout}>
+                <Button
+                  type="primary"
+                  htmlType="button"
+                  icon="search"
+                  onClick={
                 () => dispatch({ type: 'REAPRB0001/query', parentOrgId: selected && selected.key })
               }
-            >
+                >
             查询
-            </Button>
-          </Item>
-        </Col>
+                </Button>
+              </Item>
+            </Col>
+          </Row>
+        </Form>
       </Row>
+
       <Col span={22}>
         <OrgForm showCreateModal={showCreateModal} selected={selected} dispatch={dispatch} />
       </Col>
@@ -142,7 +155,7 @@ const Component = ({
           bordered
         />
       </Col>
-    </Col>
+    </Card>
   )
 }
 export default Component

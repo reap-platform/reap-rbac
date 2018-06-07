@@ -5,7 +5,15 @@ import EditableCell from '../EditableCell'
 import UserForm from './UserForm'
 import RoleTransfer from './RoleTransfer'
 import OrgSelect from './OrgSelect'
-import styles from './UserList.less'
+
+const formItemLayout = {
+  labelCol: {
+    span: 4,
+  },
+  wrapperCol: {
+    span: 16,
+  },
+}
 
 const Component = ({
   page, dispatch, showCreateModal, selected, loading, orgs, search, user, selectedKeys, showTransferModal, roles,
@@ -120,17 +128,18 @@ const Component = ({
 
   return (
     <Col >
-      <Row gutter={24} className={styles.searchForm}>
-        <Row>
-          <Col span={16}>
-            <Item label="归属机构">
-              <OrgSelect
-                style={{ width: '40%' }}
-                orgs={orgs}
-                multiple
-                value={search.orgIds}
-                onFocus={() => dispatch({ type: 'REAPRB0002/orgTree' })}
-                onChange={(value) => {
+      <Row>
+        <Form>
+          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+            <Col md={8} sm={24}>
+              <Item label="机构" {...formItemLayout}>
+                <OrgSelect
+                  style={{ width: '100%' }}
+                  orgs={orgs}
+                  multiple
+                  value={search.orgIds}
+                  onFocus={() => dispatch({ type: 'REAPRB0002/orgTree' })}
+                  onChange={(value) => {
                 dispatch({
                   type: 'REAPRB0002/setState',
                   search: {
@@ -138,14 +147,14 @@ const Component = ({
                   },
                 })
             }}
-              />
-            </Item>
-          </Col>
-        </Row>
-        <Col span={4}>
-          <Item label="用户名">
-            <Input
-              onChange={(e) => {
+                />
+              </Item>
+            </Col>
+
+            <Col md={8} sm={24}>
+              <Item label="用户名" {...formItemLayout}>
+                <Input
+                  onChange={(e) => {
                 const { value } = e.target
                 dispatch({
                   type: 'REAPRB0002/setState',
@@ -154,13 +163,13 @@ const Component = ({
                   },
                 })
               }}
-            />
-          </Item>
-        </Col>
-        <Col span={4} >
-          <Item label="姓名">
-            <Input
-              onChange={(e) => {
+                />
+              </Item>
+            </Col>
+            <Col md={8} sm={24} >
+              <Item label="姓名" {...formItemLayout}>
+                <Input
+                  onChange={(e) => {
               const { value } = e.target
               dispatch({
                 type: 'REAPRB0002/setState',
@@ -169,13 +178,15 @@ const Component = ({
                 },
               })
             }}
-            />
-          </Item>
-        </Col>
-        <Col span={4} >
-          <Item label="邮箱">
-            <Input
-              onChange={(e) => {
+                />
+              </Item>
+            </Col>
+          </Row>
+          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+            <Col md={8} sm={24} >
+              <Item label="邮箱" {...formItemLayout}>
+                <Input
+                  onChange={(e) => {
               const { value } = e.target
               dispatch({
                 type: 'REAPRB0002/setState',
@@ -184,13 +195,13 @@ const Component = ({
                 },
               })
             }}
-            />
-          </Item>
-        </Col>
-        <Col span={4} >
-          <Item label="电话">
-            <Input
-              onChange={(e) => {
+                />
+              </Item>
+            </Col>
+            <Col md={8} sm={24}>
+              <Item label="电话" {...formItemLayout}>
+                <Input
+                  onChange={(e) => {
               const { value } = e.target
               dispatch({
                 type: 'REAPRB0002/setState',
@@ -199,23 +210,26 @@ const Component = ({
                 },
               })
             }}
-            />
-          </Item>
-        </Col>
-        <Col span={4} >
-          <Item>
-            <Button
-              type="primary"
-              htmlType="button"
-              icon="search"
-              onClick={
+                />
+              </Item>
+            </Col>
+
+          </Row>
+          <div style={{ overflow: 'hidden' }}>
+            <span style={{ float: 'right', marginBottom: 24 }}>
+              <Button
+                type="primary"
+                htmlType="button"
+                icon="search"
+                onClick={
                 () => dispatch({ type: 'REAPRB0002/query', orgId: selected && selected.key })
               }
-            >
+              >
             查询
-            </Button>
-          </Item>
-        </Col>
+              </Button>
+            </span>
+          </div>
+        </Form>
       </Row>
       <Col>
         <UserForm orgs={orgs} showCreateModal={showCreateModal} selected={selected} dispatch={dispatch} />

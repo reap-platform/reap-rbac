@@ -25,7 +25,6 @@ class BasicLayout extends React.PureComponent {
                 minHeight: 'calc(100vh - 30px)',
                 margin: '0 auto 0 auto',
                 padding: '24px',
-                backgroundColor: '#fbfbfb',
               }}
             >
               <Switch>

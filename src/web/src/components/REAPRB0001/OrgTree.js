@@ -1,5 +1,5 @@
 import React from 'react'
-import { Col, Tree, Spin, Icon } from 'antd'
+import { Tree, Spin, Icon, Card } from 'antd'
 
 const { TreeNode } = Tree
 
@@ -19,29 +19,31 @@ const Component = ({
     return <TreeNode key={item.key} title={item.title} data={item} />
   })
   return (
-    <Col span={6} >
-      <Col span={20} push={2}>
-        <Spin spinning={loading}>
-          <Tree
-            defaultExpandedKeys={['root']}
-            showIcon
-            showLine
-            onSelect={(selectedKeys, { selected, selectedNodes }) => {
-                    dispatch({ type: 'REAPRB0001/select', selected: selected ? selectedNodes[0].props.data : null })
-                  }}
-          >
-            <TreeNode
-              key="root"
-              onSelect={() => dispatch({ type: 'REAPRB0001/select', selected: null })}
-              icon={<Icon type="home" />}
-              title="机构列表"
+    <Card title="机构树" bordered={false}>
+      {
+        orgs && orgs.length > 0 ? (
+          <Spin spinning={loading}>
+            <Tree
+              defaultExpandedKeys={['root']}
+              showIcon
+              onSelect={(selectedKeys, { selected, selectedNodes }) => {
+                      dispatch({ type: 'REAPRB0001/select', selected: selected ? selectedNodes[0].props.data : null })
+                    }}
             >
-              {loop(orgs)}
-            </TreeNode>
-          </Tree>
-        </Spin>
-      </Col>
-    </Col>
+              <TreeNode
+                key="root"
+                onSelect={() => dispatch({ type: 'REAPRB0001/select', selected: null })}
+                icon={<Icon type="home" />}
+                title=""
+              >
+                {loop(orgs)}
+              </TreeNode>
+            </Tree>
+          </Spin>
+        ) : <div>暂无数据</div>
+      }
+
+    </Card>
   )
 }
 export default Component

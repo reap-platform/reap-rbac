@@ -4,7 +4,15 @@ import moment from 'moment'
 import EditableCell from '../EditableCell'
 import FunctionTransfer from './FunctionTransfer'
 import RoleForm from './RoleForm'
-import styles from './RoleList.less'
+
+const formItemLayout = {
+  labelCol: {
+    span: 4,
+  },
+  wrapperCol: {
+    span: 16,
+  },
+}
 
 const Component = ({
   page, dispatch, showCreateModal, loading, role, showTransferModal, functions, selectedKeys,
@@ -74,12 +82,13 @@ const Component = ({
   ]
 
   return (
-    <Col>
-      <Row gutter={12} className={styles.searchForm}>
-        <Col span={8}>
-          <Item label="名称">
-            <Input
-              onChange={(e) => {
+    <Col >
+      <Row>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col span={8}>
+            <Item label="名称" {...formItemLayout}>
+              <Input
+                onChange={(e) => {
                 const { value } = e.target
                 dispatch({
                   type: 'REAPRB0003/setState',
@@ -88,24 +97,27 @@ const Component = ({
                   },
                 })
               }}
-            />
-          </Item>
-        </Col>
-        <Col span={4} >
-          <Item>
-            <Button
-              type="primary"
-              htmlType="button"
-              icon="search"
-              onClick={
+              />
+            </Item>
+          </Col>
+          <Col span={8}>
+            <Item {...formItemLayout}>
+              <Button
+                type="primary"
+                htmlType="button"
+                icon="search"
+                onClick={
                 () => dispatch({ type: 'REAPRB0003/query' })
               }
-            >
+              >
             查询
-            </Button>
-          </Item>
-        </Col>
+              </Button>
+            </Item>
+          </Col>
+        </Row>
+
       </Row>
+
       <Col>
         <RoleForm showCreateModal={showCreateModal} dispatch={dispatch} />
       </Col>
