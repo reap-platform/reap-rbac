@@ -64,9 +64,34 @@ public class UserController {
 	@Autowired
 	private OrgRepository orgRepository;
 
-	@Value ("${password.md5.salt}")
+	@Value("${password.md5.salt}")
 	private String salt;
-	
+
+	/** @apiDefine User 用户维护 */
+	/** @apiDefine createUser 创建用户 */
+	/** @apiDefine updateUser 更新用户 */
+	/** @apiDefine deleteUser 删除用户 */
+	/** @apiDefine queryUser 查询用户 */
+
+	/**
+	 * @api {post} /user/org/{orgId} 创建用户
+	 * @apiDescription 创建归属在指定机构下的用户
+	 * @apiName createUser
+	 * @apiGroup User
+	 * @apiParam (PathVariable) {String} orgId 机构 id
+	 * @apiParam (Body) {String} username  用户名
+	 * @apiParam (Body) {String} name 姓名
+	 * @apiParam (Body) {String} password 密码
+	 * @apiParam (Body) {String} email 邮箱
+	 * @apiParam (Body) {String} phoneNo 电话号码
+	 * @apiParam (Body) {String} gender 姓别 'M' 男 'F' 女
+	 * @apiParam (Body) {String} remark 备注
+	 * @apiSuccess (Success) {Boolean} success 业务成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/user/org/{orgId}", method = RequestMethod.POST)
 	public Result<User> create(@RequestBody User user, @PathVariable String orgId) {
 		validate(user);
@@ -82,6 +107,24 @@ public class UserController {
 		Assert.isTrue(!userRepository.existsByEmail(user.getEmail()), ErrorCodes.DUPLICATED_EMAIL);
 	}
 
+	/**
+	 * @api {put} /user 更新用户
+	 * @apiName createUser
+	 * @apiGroup User
+	 * @apiParam (PathVariable) {String} orgId 机构 id
+	 * @apiParam (Body) {String} username  用户名
+	 * @apiParam (Body) {String} name 姓名
+	 * @apiParam (Body) {String} password 密码
+	 * @apiParam (Body) {String} email 邮箱
+	 * @apiParam (Body) {String} phoneNo 电话号码
+	 * @apiParam (Body) {String} gender 姓别 'M' 男 'F' 女
+	 * @apiParam (Body) {String} remark 备注
+	 * @apiSuccess (Success) {Boolean} success 业务成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/user", method = RequestMethod.PUT)
 	public Result<User> update(@RequestBody User user) {
 		User u = userRepository.findById(user.getId()).get();
@@ -89,12 +132,54 @@ public class UserController {
 		return DefaultResult.newResult(userRepository.save(u));
 	}
 
+	
+	/**
+	 * @api {delete} /user 删除用户
+	 * @apiName deleteUser
+	 * @apiGroup User
+	 * @apiParam (PathVariable) {String} id 用户 id
+	 * @apiSuccess (Success) {Boolean} success 业务成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/user/{id}", method = RequestMethod.DELETE)
 	public Result<?> delete(@PathVariable String id) {
 		userRepository.deleteById(id);
 		return DefaultResult.newResult();
 	}
 
+	
+	/**
+	 * @api {get} /users 查询用户
+	 * @apiName queryUser
+	 * @apiGroup User
+	 * @apiParam (QueryString) {Number} [page=0] 页码
+	 * @apiParam (QueryString) {Number} [size=10] 每页记录数
+	 * @apiParam (QueryString) {String} [username] 用户名
+	 * @apiParam (QueryString) {String} [name] 姓名
+	 * @apiParam (QueryString) {String} [email] 邮箱
+	 * @apiParam (QueryString) {String} [phoneNo] 电话号码
+	 * @apiSuccess (Success) {Boolean} success 成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 响应数据
+	 * @apiSuccess (Success) {Number} payload.totalPages 总页数
+	 * @apiSuccess (Success) {Number} payload.totalElements 总记录数
+	 * @apiSuccess (Success) {Number} payload.numberOfElements 当前记录数
+	 * @apiSuccess (Success) {Object[]} payload.content 机构列表
+	 * @apiSuccess (Success) {String} payload.content.id 用户 id
+	 * @apiSuccess (Success) {String} payload.content.username 用户名
+	 * @apiSuccess (Success) {String} payload.content.name 用户姓名
+	 * @apiSuccess (Success) {String} payload.content.email 邮箱
+	 * @apiSuccess (Success) {String} payload.content.phoneNo 电话号码
+	 * @apiSuccess (Success) {String} payload.content.gender 姓别  'M' 男 'F' 女
+	 * @apiSuccess (Success) {String} payload.content.remark 备注
+ 	 * @apiSuccess (Success) {String} payload.content.createTime 创建时间
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/users", method = RequestMethod.GET)
 	public Result<Page<User>> find(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, QueryUserSpec spec) {

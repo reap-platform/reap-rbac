@@ -54,6 +54,44 @@ public class AuthenticationController {
 	@Value("${password.md5.salt}")
 	private String salt = "";
 
+	/** @apiDefine Security 安全 */
+	/** @apiDefine authentication 用户认证 */
+
+	/**
+	 * @api {post} /authentication 用户认证
+	 * @apiName authentication
+	 * @apiGroup Security
+	 * @apiParam (Body) {String} username 用户名
+	 * @apiParam (Body) {String} password 密码
+	 * @apiSuccess (Success) {Boolean} success 业务成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 用户信息
+	 * @apiSuccess (Success) {String} payload.username 用户名
+	 * @apiSuccess (Success) {String} payload.name 姓名
+	 * @apiSuccess (Success) {String} payload.email 邮箱
+	 * @apiSuccess (Success) {String} payload.phoneNo 手机
+	 * @apiSuccess (Success) {String} payload.createTime 创建时间
+	 * @apiSuccess (Success) {Object} payload.org 归属机构
+	 * @apiSuccess (Success) {String} payload.org.id 机构 id
+	 * @apiSuccess (Success) {String} payload.org.name 机构名称
+	 * @apiSuccess (Success) {String} payload.org.code 机构代码
+	 * @apiSuccess (Success) {String} payload.org.createTime 创建时间
+	 * @apiSuccess (Success) {Object[]} payload.roles 岗位
+	 * @apiSuccess (Success) {String} payload.roles.id 岗位 id
+	 * @apiSuccess (Success) {String} payload.roles.name 岗位名称
+	 * @apiSuccess (Success) {String} payload.roles.remark 备注
+	 * @apiSuccess (Success) {Object[]} payload.roles.functions 岗位功能
+	 * @apiSuccess (Success) {String} payload.roles.functions.id 功能 id
+	 * @apiSuccess (Success) {String} payload.roles.functions.serviceId 归属系统
+	 * @apiSuccess (Success) {String} payload.roles.functions.code 功能码
+	 * @apiSuccess (Success) {String} payload.roles.functions.name 功能名称
+	 * @apiSuccess (Success) {String} payload.roles.functions.type 功能类型 'M' 菜单 'O' 操作
+	 * @apiSuccess (Success) {String} payload.roles.functions.action 动作
+	 * @apiSuccess (Success) {String} payload.roles.functions.remark 备注
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/authentication", method = RequestMethod.POST)
 	public Result<User> authentication(@RequestParam String username, @RequestParam String password) {
 		Optional<User> user = userRepository.findOneByUsernameAndPassword(username, MD5Utils.encode(password, salt));
