@@ -183,6 +183,7 @@ public class RoleController {
 		users.forEach(user -> {
 			user.getRoles().remove(role);
 		});
+		userRepository.saveAll(users);
 		roleRepository.deleteById(id);
 		return DefaultResult.newResult();
 	}
