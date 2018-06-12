@@ -55,7 +55,6 @@ public class AuthenticationController {
 	private String salt = "";
 
 	/** @apiDefine Security 安全 */
-	/** @apiDefine authentication 用户认证 */
 
 	/**
 	 * @api {post} /authentication 用户认证

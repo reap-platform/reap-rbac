@@ -63,12 +63,6 @@ public class RoleController {
 	private RoleRepository roleRepository;
 
 	/** @apiDefine Role 角色维护 */
-	/** @apiDefine allocateRoles 分配角色 */
-	/** @apiDefine allRoles 所有角色 */
-	/** @apiDefine createRole 创建角色 */
-	/** @apiDefine deleteRole 删除角色 */
-	/** @apiDefine queryRole 查询角色*/
-	/** @apiDefine updateRole 修改角色 */
 	
 	/**
 	 * @api {post} /role/user/{id} 分配角色

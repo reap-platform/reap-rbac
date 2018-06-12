@@ -67,15 +67,6 @@ public class OrgController {
 	private OrgRepository orgRepository;
 
 	/** @apiDefine Org 机构维护 */
-	/** @apiDefine createOrg 创建子机构 */
-	/** @apiDefine createRootOrg 创建根机构 */
-	/** @apiDefine deleteOrg 删除机构 */
-	/** @apiDefine queryOrg 查询机构 */
-	/** @apiDefine updateOrg 修改机构 */
-	/** @apiDefine findUserByOrgId 查询指定机构用户 */
-	/** @apiDefine updateOrg 修改机构 */
-	/** @apiDefine orgTree 机构树 */
-	/** @apiDefine getOrgById 查询指定 */
 	
 	/**
 	 * @api {post} /org 创建机构

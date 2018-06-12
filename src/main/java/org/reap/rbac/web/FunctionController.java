@@ -35,12 +35,6 @@ public class FunctionController {
 	private RoleRepository roleRepository;
 
 	/** @apiDefine Function 功能维护 */
-	/** @apiDefine functionsAll 所有功能 */
-	/** @apiDefine allocateFunctions 分配参数 */
-	/** @apiDefine createFunction 创建功能 */
-	/** @apiDefine deleteFunction 删除功能 */
-	/** @apiDefine queryFunction 查询功能 */
-	/** @apiDefine updateFunction 修改参数 */
 
 	/**
 	 * @api {post} /function/role/{id} 分配功能

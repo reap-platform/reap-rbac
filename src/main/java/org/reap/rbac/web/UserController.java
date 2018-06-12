@@ -68,10 +68,6 @@ public class UserController {
 	private String salt;
 
 	/** @apiDefine User 用户维护 */
-	/** @apiDefine createUser 创建用户 */
-	/** @apiDefine updateUser 更新用户 */
-	/** @apiDefine deleteUser 删除用户 */
-	/** @apiDefine queryUser 查询用户 */
 
 	/**
 	 * @api {post} /user/org/{orgId} 创建用户
