@@ -58,7 +58,7 @@ public class Role {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 
-	@ManyToMany(mappedBy = "roles", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "roles")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private List<User> users = new ArrayList<>();
 
