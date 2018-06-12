@@ -1,11 +1,20 @@
 {
-  "name": "reap-rbac",
-  "version": "1.0.0",
+  "name": "reap-rbac-ui",
+  "version": "0.0.1-SNAPSHOT",
   "description": "REAP Role Base Access Control Services",
-  "private": true,
+  "private": false,
+  "license": "MIT",
+  "repository": "https://github.com/reap-platform/reap-rbac",
+  "apidoc": {
+    "name": "Reap RBAC 服务接口",
+    "description": "",
+    "version": "0.0.1-SNAPSHOT"
+  },
   "scripts": {
     "start": "roadhog server",
-    "build": "roadhog build"
+    "build": "roadhog build",
+    "build-with-app": "roadhog build --output-path ../../target/classes/static",
+    "generate-apidoc": "apidoc -i ../main/java/ -o ../../target/classes/static/apidoc"
   },
   "dependencies": {
     "antd": "^3.0.0",
@@ -15,11 +24,7 @@
     "core-js": "^2.5.1",
     "dva": "^2.1.0",
     "dva-loading": "^2.0.1",
-    "enquire-js": "^0.1.1",
     "fastclick": "^1.0.6",
-    "g-cloud": "^1.0.2-beta",
-    "g2": "^2.3.13",
-    "g2-plugin-slider": "^1.2.1",
     "lodash": "^4.17.4",
     "lodash-decorators": "^4.4.1",
     "lodash.clonedeep": "^4.5.0",
@@ -29,12 +34,10 @@
     "qs": "^6.5.0",
     "rc-drawer-menu": "^0.5.0",
     "react": "^16.0.0",
-    "react-container-query": "^0.9.1",
-    "react-document-title": "^2.0.3",
-    "react-dom": "^16.0.0",
-    "react-fittext": "^1.0.0"
+    "react-dom": "^16.0.0"
   },
   "devDependencies": {
+    "apidoc": "^0.17.6",
     "babel-eslint": "^8.0.1",
     "babel-jest": "^21.0.0",
     "babel-plugin-dva-hmr": "^0.3.2",

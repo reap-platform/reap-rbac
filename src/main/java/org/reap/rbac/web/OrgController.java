@@ -66,17 +66,55 @@ public class OrgController {
 	@Autowired
 	private OrgRepository orgRepository;
 
+	/** @apiDefine Org 机构维护 */
+	
+	/**
+	 * @api {post} /org 创建机构
+	 * @apiDescription 创建归属在指定父机构的子机构
+	 * @apiName createOrg 创建机构
+	 * @apiGroup Org
+	 * @apiParam (PathVariable) {String} id 父机构 id
+	 * @apiParam (Body) {String} name 机构名
+	 * @apiParam (Body) {String} code 机构代码
+	 * @apiSuccess (Success) {Boolean} success 业务成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 新建的机构
+	 * @apiSuccess (Success) {String} payload.id 机构 id
+	 * @apiSuccess (Success) {String} payload.name 机构名
+	 * @apiSuccess (Success) {String} payload.code 功能代码
+	 * @apiSuccess (Success) {String} payload.createTime 创建时间
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/org/{id}", method = RequestMethod.POST)
 	public Result<Org> create(@RequestBody Org org, @PathVariable String id) {
 		validate(org);
 		Org parent = FunctionalUtils.orElseThrow(orgRepository.findById(id), ErrorCodes.ORG_NOT_EXIST);
 		org.setParent(parent);
-		parent.setLeaf("N");
+		parent.setLeaf(Constants.LEAF_FLAG_N);
 		orgRepository.save(parent);
 		org.setCreateTime(new Date());
 		return DefaultResult.newResult(orgRepository.save(org));
 	}
 
+	/**
+	 * @api {post} /org 创建机构
+	 * @apiName createRootOrg 创建机构
+	 * @apiGroup Org
+	 * @apiParam (Body) {String} name 机构名
+	 * @apiParam (Body) {String} code 机构代码
+	 * @apiSuccess (Success) {Boolean} success 业务成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 新建的机构
+	 * @apiSuccess (Success) {String} payload.id 机构 id
+	 * @apiSuccess (Success) {String} payload.name 机构名
+	 * @apiSuccess (Success) {String} payload.code 功能代码
+	 * @apiSuccess (Success) {String} payload.createTime 创建时间
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/org", method = RequestMethod.POST)
 	public Result<Org> createRootOrg(@RequestBody Org org) {
 		validate(org);
@@ -84,13 +122,23 @@ public class OrgController {
 		return DefaultResult.newResult(orgRepository.save(org));
 	}
 
+	/**
+	 * @api {delete} /org/{id} 删除功能
+	 * @apiName deleteOrg
+	 * @apiGroup Org
+	 * @apiParam (PathVariable) {String} id 机构 id
+	 * @apiSuccess (Success) {Boolean} success 业务成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/org/{id}", method = RequestMethod.DELETE)
 	@Transactional
 	public Result<?> create(@PathVariable String id) {
 		Org org = FunctionalUtils.orElseThrow(orgRepository.findById(id), ErrorCodes.ORG_NOT_EXIST);
-		if ("N".equalsIgnoreCase(org.getLeaf())) {
-			List<Org> childs = orgRepository.findByParent(org).stream().map((o)->{
-				o.setParent(org.getParent()!=null? org.getParent(): null);
+		if (Constants.LEAF_FLAG_N.equalsIgnoreCase(org.getLeaf())) {
+			List<Org> childs = orgRepository.findByParent(org).stream().map((o) -> {
+				o.setParent(org.getParent() != null ? org.getParent() : null);
 				return o;
 			}).collect(Collectors.toList());
 			orgRepository.saveAll(childs);
@@ -99,6 +147,24 @@ public class OrgController {
 		return DefaultResult.newResult();
 	}
 
+	/**
+	 * @api {put} /org 更新机构
+	 * @apiName updateOrg
+	 * @apiGroup Org
+	 * @apiParam (Body) {String} id 功能 id
+	 * @apiParam (Body) {String} name 机构名称
+	 * @apiParam (Body) {String} code 机构代码
+	 * @apiSuccess (Success) {Boolean} success 业务成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 机构
+	 * @apiSuccess (Success) {String} payload.id 机构 id
+	 * @apiSuccess (Success) {String} payload.name 机构名称
+	 * @apiSuccess (Success) {String} payload.code 机构代码
+	 * @apiSuccess (Success) {String} payload.createTime 创建时间
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/org", method = RequestMethod.PUT)
 	public Result<Org> update(@RequestBody Org org) {
 		Org persisted = FunctionalUtils.orElseThrow(orgRepository.findById(org.getId()), ErrorCodes.ORG_NOT_EXIST);
@@ -107,6 +173,34 @@ public class OrgController {
 		return DefaultResult.newResult(orgRepository.save(org));
 	}
 
+	/**
+	 * @api {get} /org/{id}/user 查询指定机构的用户
+	 * @apiName findUserByOrgId
+	 * @apiGroup Org
+	 * @apiParam (PathVariable) {String} id 机构 id
+	 * @apiParam (QueryString) {Number} [page=0] 页码
+	 * @apiParam (QueryString) {Number} [size=10] 每页记录数
+	 * @apiSuccess (Success) {Boolean} success 业务成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 响应数据
+	 * @apiSuccess (Success) {Number} payload.totalPages 总页数
+	 * @apiSuccess (Success) {Number} payload.totalElements 总记录数
+	 * @apiSuccess (Success) {Number} payload.numberOfElements 当前记录数
+	 * @apiSuccess (Success) {Object[]} payload.content 路由列表
+	 * @apiSuccess (Success) {String} payload.content.username 用户名
+	 * @apiSuccess (Success) {String} payload.content.name 姓名
+	 * @apiSuccess (Success) {String} payload.content.email 邮箱
+	 * @apiSuccess (Success) {String} payload.content.phoneNo 手机
+	 * @apiSuccess (Success) {String} payload.content.createTime 创建时间
+	 * @apiSuccess (Success) {Object} payload.content.org 归属机构
+	 * @apiSuccess (Success) {String} payload.content.org.id 机构 id
+	 * @apiSuccess (Success) {String} payload.content.org.name 机构名称
+	 * @apiSuccess (Success) {String} payload.content.org.code 机构代码
+	 * @apiSuccess (Success) {String} payload.content.org.createTime 创建时间
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */	
 	@RequestMapping(path = "/org/{id}/user", method = RequestMethod.GET)
 	public Result<Page<User>> findUserByOrgId(@PathVariable String id,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
@@ -115,12 +209,60 @@ public class OrgController {
 		return DefaultResult.newResult(userRepository.findByOrg(org, PageRequest.of(page, size)));
 	}
 
+	/**
+	 * @api {get} /orgs 查询机构
+	 * @apiName queryOrg
+	 * @apiGroup Org
+	 * @apiParam (QueryString) {Number} [page=0] 页码
+	 * @apiParam (QueryString) {Number} [size=10] 每页记录数
+	 * @apiParam (QueryString) {String} [code] 机构代码
+	 * @apiParam (QueryString) {String} [name] 机构名称
+	 * @apiSuccess (Success) {Boolean} success 成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 响应数据
+	 * @apiSuccess (Success) {Number} payload.totalPages 总页数
+	 * @apiSuccess (Success) {Number} payload.totalElements 总记录数
+	 * @apiSuccess (Success) {Number} payload.numberOfElements 当前记录数
+	 * @apiSuccess (Success) {Object[]} payload.content 机构列表
+	 * @apiSuccess (Success) {String} payload.content.id 机构 id
+	 * @apiSuccess (Success) {String} payload.content.code 机构代码
+	 * @apiSuccess (Success) {String} payload.content.name 机构名称
+	 * @apiSuccess (Success) {String} payload.content.createTime 创建时间
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/orgs", method = RequestMethod.GET)
 	public Result<Page<Org>> find(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, QueryOrgSpec spec) {
 		return DefaultResult.newResult(orgRepository.findAll(spec.toSpecification(), PageRequest.of(page, size)));
 	}
 
+	/**
+	 * @api {get} /orgs/tree 查询机构树
+	 * 
+	 * @apiName orgTree
+	 * @apiGroup Org
+	 * @apiSuccess (Success) {Boolean} success 成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 机构列表
+	 * @apiSuccess (Success) {Number} payload.totalPages 总页数
+	 * @apiSuccess (Success) {Number} payload.totalElements 总记录数
+	 * @apiSuccess (Success) {Number} payload.numberOfElements 当前记录数
+	 * @apiSuccess (Success) {Object[]} payload.content 机构列表
+	 * @apiSuccess (Success) {String} payload.content.id 机构 id
+	 * @apiSuccess (Success) {String} payload.content.code 机构代码
+	 * @apiSuccess (Success) {String} payload.content.name 机构名称
+	 * @apiSuccess (Success) {String} payload.content.createTime 创建时间
+	 * @apiSuccess (Success) {Object[]} payload.content.childs 子机构
+	 * @apiSuccess (Success) {String} payload.content.childs.id 子机构 id
+	 * @apiSuccess (Success) {String} payload.content.childs.code 子机构代码
+	 * @apiSuccess (Success) {String} payload.content.childs.name 子机构名称
+	 * @apiSuccess (Success) {String} payload.content.childs.createTime 子机构创建时间
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/orgs/tree", method = RequestMethod.GET)
 	public Result<List<Org>> orgsTree() {
 		List<Org> orgs = orgRepository.findAll();
@@ -135,6 +277,26 @@ public class OrgController {
 						Collectors.toList()));
 	}
 
+	/**
+	 * @api {get} org/{id} 查询 Org
+	 * @apiName getOrgById
+	 * @apiGroup Org
+	 * @apiSuccess (Success) {Boolean} success 成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 机构
+	 * @apiSuccess (Success) {String} payload.id 机构 id
+	 * @apiSuccess (Success) {String} payload.code 机构代码
+	 * @apiSuccess (Success) {String} payload.name 机构名称
+	 * @apiSuccess (Success) {String} payload.createTime 创建时间
+	 * @apiSuccess (Success) {Object[]} payload.content.parent 父机构
+	 * @apiSuccess (Success) {String} payload.content.parent.id 父机构 id
+	 * @apiSuccess (Success) {String} payload.content.parent.code 父机构代码
+	 * @apiSuccess (Success) {String} payload.content.parent.name 父机构名称
+	 * @apiSuccess (Success) {String} payload.content.parent.createTime 父机构创建时间
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
 	@RequestMapping(path = "/org/{id}", method = RequestMethod.GET)
 	public Result<Org> findOne(@PathVariable String id) {
 		return DefaultResult.newResult(

@@ -58,15 +58,14 @@ public final class ErrorCodes {
 
 	/** 角色不存在. */
 	public static final String ROLE_NOT_EXIST = "REAPRB0108";
-	
+
 	/** 功能码不存在. */
 	public static final String FUNC_NOT_EXIST = "REAPRB0109";
-	
+
 	/** 功能码重复. */
 	public static final String DUPLICATED_FUNC_CODE = "REAPRB0110";
 
 	/** 功能名重复. */
 	public static final String DUPLICATED_FUNC_NAME = "REAPRB0111";
-	
 
 }
