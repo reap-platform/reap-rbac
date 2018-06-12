@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -57,7 +58,7 @@ public class Role {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 
-	@ManyToMany(mappedBy = "roles")
+	@ManyToMany(mappedBy = "roles", cascade = CascadeType.REMOVE)
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private List<User> users = new ArrayList<>();
 

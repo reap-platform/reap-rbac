@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -56,8 +57,8 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
  */
 @Entity
 @NamedEntityGraphs({ @NamedEntityGraph(name = "fullUser", attributeNodes = { @NamedAttributeNode("org"),
-	@NamedAttributeNode(value = "roles", subgraph = "functionsGraph"), }, subgraphs = {
-		@NamedSubgraph(name = "functionsGraph", attributeNodes = @NamedAttributeNode("functions")), }) })
+		@NamedAttributeNode(value = "roles", subgraph = "functionsGraph"), }, subgraphs = {
+				@NamedSubgraph(name = "functionsGraph", attributeNodes = @NamedAttributeNode("functions")), }) })
 public class User {
 
 	public static final String GENDER_MALE = "M";
@@ -91,14 +92,15 @@ public class User {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createTime;
 
-	@ManyToMany
+	@ManyToMany(cascade=CascadeType.REMOVE)
+	@NotFound(action = NotFoundAction.IGNORE)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
 	private String gender;
 
 	private String remark;
-	
+
 	public String getId() {
 		return id;
 	}
