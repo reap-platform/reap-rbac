@@ -44,12 +44,7 @@ const Component = ({
       dataIndex: 'name',
       key: 'name',
       width: '10%',
-      render: (text, record) => (
-        <EditableCell
-          value={text}
-          onChange={onCellChange(record.id, 'name')}
-        />
-      ),
+      render: (text, record) => (record.name),
     },
     {
       title: '姓别',
