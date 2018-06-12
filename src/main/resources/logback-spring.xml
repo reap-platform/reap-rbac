@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<springProperty scope="context"
-		name="spring.application.name" source="spring.application.name" />
-	<property name="LOG_FILE"
-		value="${LOG_PATH:-/tmp}/${spring.application.name}/app.log}" />
 	<include
 		resource="org/springframework/boot/logging/logback/base.xml" />
 	<springProfile name="dev">
