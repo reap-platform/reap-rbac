@@ -28,6 +28,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import org.reap.rbac.common.Constants;
 import org.reap.rbac.common.ErrorCodes;
 import org.reap.rbac.domain.Role;
@@ -61,9 +64,11 @@ public class RoleController {
 
 	@Autowired
 	private RoleRepository roleRepository;
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	/** @apiDefine Role 角色维护 */
-	
+
 	/**
 	 * @api {post} /role/user/{id} 分配角色
 	 * @apiDescription 为指定的用户分配角色
@@ -168,7 +173,15 @@ public class RoleController {
 	 * @apiError (Error) {String} responseMessage 错误消息
 	 */
 	@RequestMapping(path = "/role/{id}", method = RequestMethod.DELETE)
+	@Transactional
 	public Result<?> delete(@PathVariable String id) {
+		// 关联删除用户表映射记录
+		Role role = roleRepository.findById(id).get();
+		List<User> users = role.getUsers();
+		users.forEach(user -> {
+			user.getRoles().remove(role);
+		});
+		userRepository.saveAll(users);
 		roleRepository.deleteById(id);
 		return DefaultResult.newResult();
 	}
