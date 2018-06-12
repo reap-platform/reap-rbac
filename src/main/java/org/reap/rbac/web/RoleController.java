@@ -29,10 +29,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
 import org.reap.rbac.common.Constants;
 import org.reap.rbac.common.ErrorCodes;
 import org.reap.rbac.domain.Role;
