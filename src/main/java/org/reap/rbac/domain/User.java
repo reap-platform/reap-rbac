@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -92,7 +91,7 @@ public class User {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createTime;
 
-	@ManyToMany(cascade=CascadeType.REMOVE)
+	@ManyToMany
 	@NotFound(action = NotFoundAction.IGNORE)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
