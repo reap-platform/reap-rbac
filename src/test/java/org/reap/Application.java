@@ -36,7 +36,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author 7cat
  * @since 1.0
  */
-@SpringBootApplication(scanBasePackages = "org.codingtoy")
+@SpringBootApplication(scanBasePackages = "org.reap")
 @EnableDiscoveryClient
 public class Application {
 
