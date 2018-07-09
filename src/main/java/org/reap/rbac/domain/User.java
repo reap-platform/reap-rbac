@@ -23,28 +23,16 @@
 
 package org.reap.rbac.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedEntityGraphs;
-import javax.persistence.NamedSubgraph;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -55,9 +43,6 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
  * @author 7cat
  */
 @Entity
-@NamedEntityGraphs({ @NamedEntityGraph(name = "fullUser", attributeNodes = { @NamedAttributeNode("org"),
-		@NamedAttributeNode(value = "roles", subgraph = "functionsGraph"), }, subgraphs = {
-				@NamedSubgraph(name = "functionsGraph", attributeNodes = @NamedAttributeNode("functions")), }) })
 public class User {
 
 	public static final String GENDER_MALE = "M";
@@ -65,40 +50,34 @@ public class User {
 	public static final String GENDER_FEMALE = "F";
 
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@GeneratedValue
 	private String id;
 
-	@ManyToOne
-	@NotFound(action = NotFoundAction.IGNORE)
-	private Org org;
-
-	@Column(unique = true, nullable = false)
+	private String orgId;
+	
 	private String username;
 
-	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 
-	@Column(nullable = false)
 	private String email;
 
 	private String phoneNo;
 
-	@Temporal(TemporalType.TIMESTAMP)
+	@CreatedDate
 	private Date createTime;
-
-	@ManyToMany
-	@NotFound(action = NotFoundAction.IGNORE)
-	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<>();
 
 	private String gender;
 
 	private String remark;
+	
+	@Transient
+	private List<Role> roles = new ArrayList<>();
+	
+	@Transient
+	private Org org;
 
 	public String getId() {
 		return id;
@@ -180,11 +159,21 @@ public class User {
 		this.createTime = createTime;
 	}
 
-	public Set<Role> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
+	}
+
+	
+	public String getOrgId() {
+		return orgId;
+	}
+
+	
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
 	}
 }

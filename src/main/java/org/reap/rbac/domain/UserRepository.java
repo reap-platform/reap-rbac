@@ -25,26 +25,23 @@ package org.reap.rbac.domain;
 
 import java.util.Optional;
 
+import org.reap.rbac.vo.QueryUserSpec;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mybatis.annotations.Native;
+import org.springframework.data.mybatis.annotations.Native.Operation;
+import org.springframework.data.mybatis.repository.support.MybatisRepository;
 
-public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends MybatisRepository<User, String> {
 
-	@EntityGraph(value = "fullUser", type = EntityGraphType.LOAD)
 	Optional<User> findOneByUsernameAndPassword(String username, String password);
-
-	@Query(value = "select u from User u left join u.org o left join o.parent where u.org= ?1", countQuery = "select count(*) from User u left join u.org o left join o.parent where u.org= ?1")
-	Page<User> findByOrg(Org org, Pageable pageable);
 
 	boolean existsByUsername(String username);
 
 	boolean existsByEmail(String email);
-	
-	@EntityGraph(value = "fullUser", type = EntityGraphType.LOAD)
-	Optional<User> findById(String id);
+
+	Page<User> findByOrgId(String orgId, Pageable pageable);
+
+	@Native(operation= Operation.PAGE)
+	Page<User> findBySpecification(QueryUserSpec queryUserSpec, Pageable pageable);
 }

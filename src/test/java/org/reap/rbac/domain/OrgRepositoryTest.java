@@ -25,10 +25,8 @@ package org.reap.rbac.domain;
 
 import org.junit.Test;
 import org.reap.BaseTest;
-import org.reap.rbac.domain.Org;
-import org.reap.rbac.domain.OrgRepository;
-import org.reap.rbac.vo.QueryOrgSpec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -50,12 +48,12 @@ public class OrgRepositoryTest extends BaseTest{
 	 */
 	@Test
 	public void testFindByParentAndNameLike() {
-		QueryOrgSpec spec = new QueryOrgSpec();
+		Org spec = new Org();
 		spec.setName("测试");
-		spec.setParentOrgId("0000000001");
-		Page<Org> page = orgRepository.findAll(spec.toSpecification(), PageRequest.of(0, 10));
+		spec.setParentId("0000000001");
+		Page<Org> page = orgRepository.findAll(Example.of(spec), PageRequest.of(0, 10));
 		assertEquals(3, page.getContent().size());
-		Page<Org> page2 = orgRepository.findAll(new QueryOrgSpec().toSpecification(), PageRequest.of(0, 10));
+		Page<Org> page2 = orgRepository.findAll(Example.of(spec), PageRequest.of(0, 10));
 		assertEquals(7, page2.getContent().size());
 	}
 

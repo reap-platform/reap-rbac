@@ -23,9 +23,13 @@
 
 package org.reap.rbac.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import java.util.List;
 
-public interface RoleRepository extends JpaRepository<Role, String>, JpaSpecificationExecutor<Role> {
+import org.springframework.data.mybatis.annotations.Native;
+import org.springframework.data.mybatis.repository.support.MybatisRepository;
 
+public interface RoleRepository extends MybatisRepository<Role, String> {
+
+	@Native
+	List<Role> findByUserId(String userId);
 }

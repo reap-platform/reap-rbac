@@ -21,46 +21,54 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.reap.rbac.web;
+package org.reap.rbac.service.impl;
 
-import org.junit.Test;
-import org.reap.BaseTest;
+import java.util.List;
+import java.util.Optional;
+
+import org.reap.rbac.common.ErrorCodes;
+import org.reap.rbac.domain.FunctionRepository;
+import org.reap.rbac.domain.Org;
+import org.reap.rbac.domain.OrgRepository;
 import org.reap.rbac.domain.Role;
+import org.reap.rbac.domain.RoleRepository;
+import org.reap.rbac.domain.User;
 import org.reap.rbac.domain.UserRepository;
-import org.reap.support.Result;
+import org.reap.rbac.service.UserService;
+import org.reap.util.FunctionalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.Assert.*;
+import org.springframework.stereotype.Component;
 
 /**
  * 
  * @author 7cat
  * @since 1.0
  */
-public class RoleControllerTest extends BaseTest {
-
-	@Autowired
-	private RoleController roleController;
+@Component
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
 
-	@Test
-	@Transactional
-	public void testAllocateRoles() {
-		Result<?> result = roleController.allocateRoles("0000000001", new String[] { "0001", "0002", "0003" });
-		assertTrue(result.isSuccess());
-		assertEquals(3, userRepository.findById("0000000001").get().getRoles().size());
-	}
-	
-	@Test
-	public void testFind() {
-		Role spec= new Role();
-		spec.setName("岗位1");
-		Result<Page<Role>> result = roleController.find(0, 10, spec);
-		assertTrue(result.isSuccess());
-		assertEquals(1, result.getPayload().getContent().size());
+	@Autowired
+	private OrgRepository orgRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
+
+	@Autowired
+	private FunctionRepository functionRepository;
+
+	@Override
+	public User logon(String username, String password) {
+		Optional<User> userOptional = userRepository.findOneByUsernameAndPassword(username, password);
+		User user = FunctionalUtils.orElseThrow(userOptional, ErrorCodes.USERNAME_OR_PASSWORD_IS_INCORRECT);
+		Optional<Org> orgOptional = orgRepository.findById(user.getOrgId());
+		Org org = FunctionalUtils.orElseThrow(orgOptional, ErrorCodes.ORG_NOT_EXIST);
+		user.setOrg(org);
+		List<Role> roles = roleRepository.findByUserId(user.getId());
+		roles.stream().forEach(r -> r.setFunctions(functionRepository.findByRoleId(r.getId())));
+		user.setRoles(roles);
+		return user;
 	}
 }

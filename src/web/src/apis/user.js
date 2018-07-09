@@ -2,7 +2,11 @@ import { stringify } from 'qs'
 import request from '../utils/request'
 
 export function query (specification) {
-  return request(`/apis/reap-rbac/users?${stringify(specification)}`, { method: 'GET' })
+  return request(`/apis/reap-rbac/users?${stringify(specification, { skipNulls: true })}`, { method: 'GET' })
+}
+
+export function get (id) {
+  return request(`/apis/reap-rbac/user/${id}`, { method: 'GET' })
 }
 
 export function update (user) {

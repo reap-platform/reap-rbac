@@ -29,20 +29,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.CreatedDate;
 
 /**
  * 机构实体.
@@ -54,30 +46,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Org {
 
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@GeneratedValue
 	private String id;
 
-	@Column(nullable = false, unique = true)
 	private String name;
 
-	@Column(nullable = false, unique = true)
 	private String code;
 
-	@Temporal(TemporalType.TIMESTAMP)
+	@CreatedDate
 	private Date createTime;
 
-	@ManyToOne
-	@JsonIgnore
-	@NotFound(action = NotFoundAction.IGNORE)
-	private Org parent;
+	private String parentId;
 
 	private String remark;
 
+	private String leaf = null;
+
 	@Transient
 	private List<Org> childs = new ArrayList<>();
-
-	private String leaf = null;
 
 	public String getLeaf() {
 		return leaf;
@@ -105,14 +91,6 @@ public class Org {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public Org getParent() {
-		return parent;
-	}
-
-	public void setParent(Org parent) {
-		this.parent = parent;
 	}
 
 	public String getName() {
@@ -146,4 +124,13 @@ public class Org {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
 }

@@ -6,7 +6,7 @@ export function orgsTree () {
 }
 
 export function query (specification) {
-  return request(`/apis/reap-rbac/orgs?${stringify(specification)}`, { method: 'GET' })
+  return request(`/apis/reap-rbac/orgs?${stringify(specification, { skipNulls: true })}`, { method: 'GET' })
 }
 
 export function update (org) {

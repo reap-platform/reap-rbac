@@ -138,7 +138,7 @@ const Component = ({
                 dispatch({
                   type: 'REAPRB0002/setState',
                   search: {
-                    orgIds: value,
+                    orgIds: value || null,
                   },
                 })
             }}
@@ -154,7 +154,7 @@ const Component = ({
                 dispatch({
                   type: 'REAPRB0002/setState',
                   search: {
-                    username: value,
+                    username: value || null,
                   },
                 })
               }}
@@ -169,7 +169,7 @@ const Component = ({
               dispatch({
                 type: 'REAPRB0002/setState',
                 search: {
-                  name: value,
+                  name: value || null,
                 },
               })
             }}
@@ -186,7 +186,7 @@ const Component = ({
               dispatch({
                 type: 'REAPRB0002/setState',
                 search: {
-                  email: value,
+                  email: value || null,
                 },
               })
             }}
@@ -201,7 +201,7 @@ const Component = ({
               dispatch({
                 type: 'REAPRB0002/setState',
                 search: {
-                  phoneNo: value,
+                  phoneNo: value || null,
                 },
               })
             }}

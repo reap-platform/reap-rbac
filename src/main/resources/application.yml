@@ -1,0 +1,4 @@
+spring: 
+  data:
+    mybatis:
+      mapperLocations: classpath*:/mappers/*.xml

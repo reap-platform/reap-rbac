@@ -1,10 +1,6 @@
 server:
   servlet:
     context-path: /apis/reap-rbac
-spring:
-  jpa: 
-    hibernate:
-      ddl-auto: none
 
   datasource: 
     url: "jdbc:h2:mem:REAP;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM './database/ddl.sql'\\;RUNSCRIPT FROM 'classpath:scripts/init-test.sql';DB_CLOSE_ON_EXIT=FALSE"

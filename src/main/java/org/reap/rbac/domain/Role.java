@@ -27,21 +27,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import org.springframework.data.annotation.CreatedDate;
 
 /**
  * RBAC-角色表
@@ -53,26 +44,18 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 public class Role {
 
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@GeneratedValue
 	private String id;
 
-	@ManyToMany(mappedBy = "roles")
-	@JsonProperty(access = Access.WRITE_ONLY)
-	private List<User> users = new ArrayList<>();
-
-	@OneToMany
-	@NotFound(action = NotFoundAction.IGNORE)
-	private List<Function> functions = new ArrayList<>();
-
-	@Temporal(TemporalType.TIMESTAMP)
+	@CreatedDate
 	private Date createTime;
 
-	@Column(unique = true, nullable = false)
 	private String name;
 
-	@Column(nullable = true)
 	private String remark;
+	
+	@Transient
+	private List<Function> functions = new ArrayList<>();
 
 	public String getName() {
 		return name;
@@ -110,22 +93,13 @@ public class Role {
 		return functions;
 	}
 
+	
 	public void setFunctions(List<Function> functions) {
 		this.functions = functions;
 	}
 
-	public List<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
 	@Override
 	public String toString() {
-		return "Role [id=" + id + ", users=" + users + ", functions=" + functions + ", createTime=" + createTime
-				+ ", name=" + name + ", remark=" + remark + "]";
+		return "Role [id=" + id + ", createTime=" + createTime + ", name=" + name + ", remark=" + remark + "]";
 	}
-
 }

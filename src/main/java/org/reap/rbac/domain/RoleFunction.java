@@ -21,63 +21,61 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.reap.rbac.vo;
+package org.reap.rbac.domain;
+
+import java.io.Serializable;
+
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 
 /**
- * 用户模糊查询值对象.
  * 
  * @author 7cat
  * @since 1.0
  */
-public class QueryUserSpec {
+@Entity
+public class RoleFunction {
 
-	private String[] orgIds;
+	@EmbeddedId
+	private ID id;
 
-	private String username;
-
-	private String name;
-
-	private String email;
-
-	private String phoneNo;
-
-	public String getUsername() {
-		return username;
+	public ID getId() {
+		return id;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setId(ID id) {
+		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public static final RoleFunction of(String roleId, String functionId) {
+		RoleFunction roleFunction = new RoleFunction();
+		ID  id = new ID();
+		id.setRoleId(roleId);
+		id.setFunctionId(functionId);
+		roleFunction.setId(id);
+		return roleFunction;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public static class ID implements Serializable {
 
-	public String getEmail() {
-		return email;
-	}
+		private String roleId;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+		private String functionId;
 
-	public String getPhoneNo() {
-		return phoneNo;
-	}
+		public String getRoleId() {
+			return roleId;
+		}
 
-	public void setPhoneNo(String phoneNo) {
-		this.phoneNo = phoneNo;
-	}
+		public void setRoleId(String roleId) {
+			this.roleId = roleId;
+		}
 
-	public String[] getOrgIds() {
-		return orgIds;
-	}
+		public String getFunctionId() {
+			return functionId;
+		}
 
-	public void setOrgIds(String[] orgIds) {
-		this.orgIds = orgIds;
+		public void setFunctionId(String functionId) {
+			this.functionId = functionId;
+		}
 	}
 }

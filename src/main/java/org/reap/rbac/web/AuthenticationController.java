@@ -23,15 +23,11 @@
 
 package org.reap.rbac.web;
 
-import java.util.Optional;
-
-import org.reap.rbac.common.ErrorCodes;
 import org.reap.rbac.domain.User;
-import org.reap.rbac.domain.UserRepository;
+import org.reap.rbac.service.UserService;
 import org.reap.rbac.util.MD5Utils;
 import org.reap.support.DefaultResult;
 import org.reap.support.Result;
-import org.reap.util.FunctionalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,11 +44,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthenticationController {
 
-	@Autowired
-	private UserRepository userRepository;
-
 	@Value("${password.md5.salt}")
 	private String salt = "";
+	
+	@Autowired
+	private UserService userService;
 
 	/** @apiDefine Security 安全 */
 
@@ -93,7 +89,6 @@ public class AuthenticationController {
 	 */
 	@RequestMapping(path = "/authentication", method = RequestMethod.POST)
 	public Result<User> authentication(@RequestParam String username, @RequestParam String password) {
-		Optional<User> user = userRepository.findOneByUsernameAndPassword(username, MD5Utils.encode(password, salt));
-		return DefaultResult.newResult(FunctionalUtils.orElseThrow(user, ErrorCodes.USERNAME_OR_PASSWORD_IS_INCORRECT));
+		return DefaultResult.newResult(userService.logon(username, MD5Utils.encode(password, salt)));
 	}
 }

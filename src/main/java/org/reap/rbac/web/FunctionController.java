@@ -3,21 +3,26 @@ package org.reap.rbac.web;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.reap.rbac.common.Constants;
 import org.reap.rbac.common.ErrorCodes;
+import org.reap.rbac.common.Fields;
 import org.reap.rbac.domain.Function;
 import org.reap.rbac.domain.FunctionRepository;
-import org.reap.rbac.domain.Role;
-import org.reap.rbac.domain.RoleRepository;
-import org.reap.rbac.vo.QueryFuncSpec;
+import org.reap.rbac.domain.RoleFunction;
+import org.reap.rbac.domain.RoleFunctionRepository;
 import org.reap.support.DefaultResult;
 import org.reap.support.Result;
 import org.reap.util.Assert;
-import org.reap.util.FunctionalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +37,7 @@ public class FunctionController {
 	private FunctionRepository functionRepository;
 
 	@Autowired
-	private RoleRepository roleRepository;
+	private RoleFunctionRepository roleFunctionRepository;
 
 	/** @apiDefine Function 功能维护 */
 
@@ -50,11 +55,12 @@ public class FunctionController {
 	 * @apiError (Error) {String} responseMessage 错误消息
 	 */
 	@RequestMapping(path = "/function/role/{id}", method = RequestMethod.POST)
+	@Transactional
 	public Result<?> allocateFunctions(@PathVariable String id, @RequestBody String[] functionIds) {
-		Role role = FunctionalUtils.orElseThrow(roleRepository.findById(id), ErrorCodes.ROLE_NOT_EXIST);
-		List<Function> functions = functionRepository.findAllById(Arrays.asList(functionIds));
-		role.setFunctions(functions);
-		roleRepository.save(role);
+		roleFunctionRepository.deleteById_RoleId(id);
+		roleFunctionRepository.insertAll(
+				Arrays.asList(functionIds).stream().map(functionId -> RoleFunction.of(id, functionId)).collect(
+						Collectors.toList()));
 		return DefaultResult.newResult();
 	}
 
@@ -106,9 +112,9 @@ public class FunctionController {
 	 * @apiError (Error) {String} responseMessage 错误消息
 	 */
 	@RequestMapping(path = "/function", method = RequestMethod.POST)
-	public Result<Function> create(@RequestBody Function org) {
-		validate(org);
-		return DefaultResult.newResult(functionRepository.save(org));
+	public Result<Function> create(@RequestBody Function function) {
+		validate(function);
+		return DefaultResult.newResult(functionRepository.save(function));
 	}
 
 	/**
@@ -122,7 +128,9 @@ public class FunctionController {
 	 * @apiError (Error) {String} responseMessage 错误消息
 	 */
 	@RequestMapping(path = "/function/{id}", method = RequestMethod.DELETE)
+	@Transactional
 	public Result<?> delete(@PathVariable String id) {
+		roleFunctionRepository.deleteById_FunctionId(id);
 		functionRepository.deleteById(id);
 		return DefaultResult.newResult();
 	}
@@ -154,7 +162,7 @@ public class FunctionController {
 	 */
 	@RequestMapping(path = "/function", method = RequestMethod.PUT)
 	public Result<Function> update(@RequestBody Function function) {
-		return DefaultResult.newResult(functionRepository.save(function));
+		return DefaultResult.newResult(functionRepository.updateIgnoreNull(function));
 	}
 
 	/**
@@ -187,8 +195,11 @@ public class FunctionController {
 	 */
 	@RequestMapping(path = "/functions", method = RequestMethod.GET)
 	public Result<Page<Function>> find(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
-			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, QueryFuncSpec spec) {
-		return DefaultResult.newResult(functionRepository.findAll(spec.toSpecification(), PageRequest.of(page, size)));
+			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, Function spec) {
+		Example<Function> example = Example.of(spec,
+				ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING));
+		return DefaultResult.newResult(
+				functionRepository.findAll(example, PageRequest.of(page, size, Sort.by(Fields.CODE))));
 	}
 
 	private void validate(Function func) {

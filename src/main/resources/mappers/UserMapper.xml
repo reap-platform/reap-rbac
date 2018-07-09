@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.reap.rbac.domain.User">
+
+   	<select id="findBySpecification" resultMap="ResultMap" lang="XML">
+			select 
+			"user".id as "id",
+			"user".org_id as "orgId",
+			"user".username as "username",
+			"user".name as "name",
+			"user".password as "password",
+			"user".email as "email",
+			"user".phone_no as "phoneNo",
+			"user".create_time as "createTime",
+			"user".gender as "gender",
+			"user".remark as "remark" 
+			from user "user"
+		  <trim prefix="where" prefixOverrides="and |or "> 
+		      <if test="queryUserSpec!=null and  queryUserSpec.username != null">
+		        and "user".username like '%${queryUserSpec.username}%'
+		      </if>
+		  	  <if test="queryUserSpec!=null and queryUserSpec.name != null">
+		        and "user".name like '%${queryUserSpec.name}%'
+		      </if>
+		      <if test="queryUserSpec!=null and queryUserSpec.email != null">
+		        and "user".email like '%${queryUserSpec.email}%'
+		      </if>
+		      <if test="queryUserSpec!=null and queryUserSpec.phoneNo != null">
+		        and "user".phone_no like '%${queryUserSpec.phoneNo}%'
+		      </if>
+		      <if test="queryUserSpec!=null and queryUserSpec.orgIds != null">
+				and "user".org_id in
+				<foreach item="item" index="index" collection="queryUserSpec.orgIds" open="(" separator="," close=")">#{item}</foreach>
+			</if>
+		  </trim>
+ 
+		  <if test="_sorts != null">
+				<bind name="_columnsMap"
+					value='#{"id":"\"user\".id","orgId":"\"user\".org_id","username":"\"user\".username","name":"\"user\".name","password":"\"user\".password","email":"\"user\".email","phoneNo":"\"user\".phone_no","createTime":"\"user\".create_time","gender":"\"user\".gender","remark":"\"user\".remark"}' />
+				order by
+				<foreach item="item" index="idx" collection="_sorts" open="" separator="," close="">
+					<if test="item.ignoreCase">lower(</if>
+					${_columnsMap[item.property]}
+					<if test="item.ignoreCase">)</if>
+					${item.direction}
+				</foreach>
+			</if>
+		</select>
+
+      	<select id="count_findBySpecification" lang="XML">
+			select  count(*) from user "user"
+		   	  <trim prefix="where" prefixOverrides="and |or "> 
+		      <if test="queryUserSpec!=null and queryUserSpec.username != null">
+		        and "user".username like '%${queryUserSpec.username}%'
+		      </if>
+		  	  <if test="queryUserSpec!=null and queryUserSpec.name != null">
+		        and "user".name like '%${queryUserSpec.name}%'
+		      </if>
+		      <if test="queryUserSpec!=null and queryUserSpec.email != null">
+		        and "user".email like '%${queryUserSpec.email}%'
+		      </if>
+		      <if test="queryUserSpec!=null and queryUserSpec.phoneNo != null">
+		        and "user".phone_no like '%${queryUserSpec.phoneNo}%'
+		      </if>
+		      <if test="queryUserSpec!=null and queryUserSpec.orgIds != null">
+				and "user".org_id in
+				<foreach item="item" index="index" collection="queryUserSpec.orgIds" open="(" separator="," close=")">#{item}</foreach>
+			</if>
+		  </trim>
+		</select>
+</mapper>

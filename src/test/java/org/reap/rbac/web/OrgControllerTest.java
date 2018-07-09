@@ -27,8 +27,6 @@ import org.junit.Test;
 import org.reap.BaseTest;
 import org.reap.rbac.domain.Org;
 import org.reap.rbac.domain.User;
-import org.reap.rbac.vo.QueryOrgSpec;
-import org.reap.rbac.web.OrgController;
 import org.reap.support.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,8 +59,8 @@ public class OrgControllerTest extends BaseTest {
 	 */
 	@Test
 	public void find() {
-		QueryOrgSpec spec = new QueryOrgSpec();
-		spec.setParentOrgId("0000000001");
+		Org spec = new Org();
+		spec.setParentId("0000000001");
 		Result<Page<Org>> result = orgController.find(0,20,spec);
 		assertEquals(3, result.getPayload().getContent().size());
 	}

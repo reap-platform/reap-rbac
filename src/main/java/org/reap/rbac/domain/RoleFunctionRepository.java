@@ -21,63 +21,19 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.reap.rbac.vo;
+package org.reap.rbac.domain;
+
+import org.reap.rbac.domain.RoleFunction.ID;
+import org.springframework.data.mybatis.repository.support.MybatisRepository;
 
 /**
- * 用户模糊查询值对象.
  * 
  * @author 7cat
  * @since 1.0
  */
-public class QueryUserSpec {
+public interface RoleFunctionRepository extends MybatisRepository<RoleFunction, ID> {
 
-	private String[] orgIds;
-
-	private String username;
-
-	private String name;
-
-	private String email;
-
-	private String phoneNo;
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPhoneNo() {
-		return phoneNo;
-	}
-
-	public void setPhoneNo(String phoneNo) {
-		this.phoneNo = phoneNo;
-	}
-
-	public String[] getOrgIds() {
-		return orgIds;
-	}
-
-	public void setOrgIds(String[] orgIds) {
-		this.orgIds = orgIds;
-	}
+	void deleteById_RoleId(String roleId);
+	
+	void deleteById_FunctionId(String functionId);
 }

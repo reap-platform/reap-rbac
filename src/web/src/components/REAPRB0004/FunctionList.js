@@ -118,7 +118,7 @@ const Component = ({
                 dispatch({
                   type: 'REAPRB0004/setState',
                   search: {
-                    serviceId: value,
+                    serviceId: value || null,
                   },
                 })
               }}
@@ -133,7 +133,7 @@ const Component = ({
                 dispatch({
                   type: 'REAPRB0004/setState',
                   search: {
-                    name: value,
+                    name: value || null,
                   },
                 })
               }}
@@ -148,7 +148,7 @@ const Component = ({
                 dispatch({
                   type: 'REAPRB0004/setState',
                   search: {
-                    code: value,
+                    code: value || null,
                   },
                 })
               }}

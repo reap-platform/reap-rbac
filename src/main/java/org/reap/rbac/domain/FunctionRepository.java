@@ -1,10 +1,17 @@
+
 package org.reap.rbac.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import java.util.List;
 
-public interface FunctionRepository extends JpaRepository<Function, String>, JpaSpecificationExecutor<Function> {
+import org.springframework.data.mybatis.annotations.Native;
+import org.springframework.data.mybatis.repository.support.MybatisRepository;
+
+public interface FunctionRepository extends MybatisRepository<Function, String> {
+
 	boolean existsByCode(String code);
 
 	boolean existsByName(String name);
+
+	@Native
+	List<Function> findByRoleId(String roleId);
 }

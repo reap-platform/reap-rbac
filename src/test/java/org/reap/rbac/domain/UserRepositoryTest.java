@@ -53,7 +53,7 @@ public class UserRepositoryTest extends BaseTest {
 	@Test
 	public void testFindAll() {
 		QueryUserSpec spec = new QueryUserSpec();
-		Page<User> page = userRepository.findAll(spec.toSpecification(), PageRequest.of(0, 10));
+		Page<User> page = userRepository.findBySpecification(spec, PageRequest.of(0, 10));
 		assertEquals(3, page.getContent().size());
 		Map<String, User> userMapping = page.getContent().stream().collect(Collectors.toMap(User::getId, user -> user));
 		assertEquals(2, userMapping.get("0000000001").getRoles().size());
@@ -61,7 +61,7 @@ public class UserRepositoryTest extends BaseTest {
 		assertEquals(1, userMapping.get("0000000003").getRoles().size());
 		userMapping.get("0000000001").getRoles().clear();
 		userRepository.saveAll(page.getContent());
-		page = userRepository.findAll(spec.toSpecification(), PageRequest.of(0, 10));
+		page = userRepository.findBySpecification(spec, PageRequest.of(0, 10));
 		userMapping = page.getContent().stream().collect(Collectors.toMap(User::getId, user -> user));
 		assertEquals(0, userMapping.get("0000000001").getRoles().size());
 		assertEquals(1, userMapping.get("0000000002").getRoles().size());

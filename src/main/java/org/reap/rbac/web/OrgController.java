@@ -24,25 +24,28 @@
 package org.reap.rbac.web;
 
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.reap.rbac.common.Constants;
 import org.reap.rbac.common.ErrorCodes;
+import org.reap.rbac.common.Fields;
 import org.reap.rbac.domain.Org;
 import org.reap.rbac.domain.OrgRepository;
 import org.reap.rbac.domain.User;
 import org.reap.rbac.domain.UserRepository;
-import org.reap.rbac.vo.QueryOrgSpec;
 import org.reap.support.DefaultResult;
 import org.reap.support.Result;
 import org.reap.util.Assert;
 import org.reap.util.FunctionalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,7 +70,7 @@ public class OrgController {
 	private OrgRepository orgRepository;
 
 	/** @apiDefine Org 机构维护 */
-	
+
 	/**
 	 * @api {post} /org 创建机构
 	 * @apiDescription 创建归属在指定父机构的子机构
@@ -91,10 +94,9 @@ public class OrgController {
 	public Result<Org> create(@RequestBody Org org, @PathVariable String id) {
 		validate(org);
 		Org parent = FunctionalUtils.orElseThrow(orgRepository.findById(id), ErrorCodes.ORG_NOT_EXIST);
-		org.setParent(parent);
 		parent.setLeaf(Constants.LEAF_FLAG_N);
 		orgRepository.save(parent);
-		org.setCreateTime(new Date());
+		org.setParentId(id);
 		return DefaultResult.newResult(orgRepository.save(org));
 	}
 
@@ -118,7 +120,6 @@ public class OrgController {
 	@RequestMapping(path = "/org", method = RequestMethod.POST)
 	public Result<Org> createRootOrg(@RequestBody Org org) {
 		validate(org);
-		org.setCreateTime(new Date());
 		return DefaultResult.newResult(orgRepository.save(org));
 	}
 
@@ -134,11 +135,11 @@ public class OrgController {
 	 */
 	@RequestMapping(path = "/org/{id}", method = RequestMethod.DELETE)
 	@Transactional
-	public Result<?> create(@PathVariable String id) {
+	public Result<?> delete(@PathVariable String id) {
 		Org org = FunctionalUtils.orElseThrow(orgRepository.findById(id), ErrorCodes.ORG_NOT_EXIST);
 		if (Constants.LEAF_FLAG_N.equalsIgnoreCase(org.getLeaf())) {
-			List<Org> childs = orgRepository.findByParent(org).stream().map((o) -> {
-				o.setParent(org.getParent() != null ? org.getParent() : null);
+			List<Org> childs = orgRepository.findByParentId(org.getId()).stream().map((o) -> {
+				o.setParentId(org.getParentId() != null ? org.getParentId() : null);
 				return o;
 			}).collect(Collectors.toList());
 			orgRepository.saveAll(childs);
@@ -200,13 +201,12 @@ public class OrgController {
 	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
 	 * @apiError (Error) {String} responseCode 错误码
 	 * @apiError (Error) {String} responseMessage 错误消息
-	 */	
+	 */
 	@RequestMapping(path = "/org/{id}/user", method = RequestMethod.GET)
 	public Result<Page<User>> findUserByOrgId(@PathVariable String id,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size) {
-		Org org = FunctionalUtils.orElseThrow(orgRepository.findById(id), ErrorCodes.ORG_NOT_EXIST);
-		return DefaultResult.newResult(userRepository.findByOrg(org, PageRequest.of(page, size)));
+		return DefaultResult.newResult(userRepository.findByOrgId(id, PageRequest.of(page, size)));
 	}
 
 	/**
@@ -234,8 +234,12 @@ public class OrgController {
 	 */
 	@RequestMapping(path = "/orgs", method = RequestMethod.GET)
 	public Result<Page<Org>> find(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
-			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, QueryOrgSpec spec) {
-		return DefaultResult.newResult(orgRepository.findAll(spec.toSpecification(), PageRequest.of(page, size)));
+			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, Org spec) {
+		Example<Org> example = Example.of(spec,
+				ExampleMatcher.matching().withIgnoreNullValues().withIgnoreCase().withStringMatcher(
+						StringMatcher.CONTAINING));
+		return DefaultResult.newResult(
+				orgRepository.findAll(example, PageRequest.of(page, size, Sort.by(Fields.CODE))));
 	}
 
 	/**
@@ -268,12 +272,12 @@ public class OrgController {
 		List<Org> orgs = orgRepository.findAll();
 		Map<String, Org> orgMapping = orgs.stream().collect(Collectors.toMap(Org::getId, o -> o));
 		for (Org o : orgs) {
-			if (o.getParent() != null) {
-				orgMapping.get(o.getParent().getId()).addChild(o);
+			if (o.getParentId() != null) {
+				orgMapping.get(o.getParentId()).addChild(o);
 			}
 		}
 		return DefaultResult.newResult(
-				orgs.stream().filter((o) -> o.getParent() == null).sorted(Comparator.comparing(Org::getCode)).collect(
+				orgs.stream().filter((o) -> o.getParentId() == null).sorted(Comparator.comparing(Org::getCode)).collect(
 						Collectors.toList()));
 	}
 

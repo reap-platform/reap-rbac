@@ -31,19 +31,22 @@ import org.reap.rbac.common.ErrorCodes;
 import org.reap.rbac.common.Fields;
 import org.reap.rbac.domain.Org;
 import org.reap.rbac.domain.OrgRepository;
+import org.reap.rbac.domain.RoleRepository;
 import org.reap.rbac.domain.User;
 import org.reap.rbac.domain.UserRepository;
+import org.reap.rbac.domain.UserRoleRepository;
 import org.reap.rbac.util.MD5Utils;
 import org.reap.rbac.vo.QueryUserSpec;
 import org.reap.support.DefaultResult;
 import org.reap.support.Result;
 import org.reap.util.Assert;
 import org.reap.util.FunctionalUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,6 +67,12 @@ public class UserController {
 	@Autowired
 	private OrgRepository orgRepository;
 
+	@Autowired
+	private UserRoleRepository userRoleRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
+
 	@Value("${password.md5.salt}")
 	private String salt;
 
@@ -75,7 +84,7 @@ public class UserController {
 	 * @apiName createUser
 	 * @apiGroup User
 	 * @apiParam (PathVariable) {String} orgId 机构 id
-	 * @apiParam (Body) {String} username  用户名
+	 * @apiParam (Body) {String} username 用户名
 	 * @apiParam (Body) {String} name 姓名
 	 * @apiParam (Body) {String} password 密码
 	 * @apiParam (Body) {String} email 邮箱
@@ -108,7 +117,7 @@ public class UserController {
 	 * @apiName createUser
 	 * @apiGroup User
 	 * @apiParam (PathVariable) {String} orgId 机构 id
-	 * @apiParam (Body) {String} username  用户名
+	 * @apiParam (Body) {String} username 用户名
 	 * @apiParam (Body) {String} name 姓名
 	 * @apiParam (Body) {String} password 密码
 	 * @apiParam (Body) {String} email 邮箱
@@ -122,13 +131,11 @@ public class UserController {
 	 * @apiError (Error) {String} responseMessage 错误消息
 	 */
 	@RequestMapping(path = "/user", method = RequestMethod.PUT)
-	public Result<User> update(@RequestBody User user) {
-		User u = userRepository.findById(user.getId()).get();
-		BeanUtils.copyProperties(user, u, Fields.PASSWORD, Fields.CREATE_TIME);
-		return DefaultResult.newResult(userRepository.save(u));
+	public Result<?> update(@RequestBody User user) {
+		userRepository.updateIgnoreNull(user);
+		return DefaultResult.newResult();
 	}
 
-	
 	/**
 	 * @api {delete} /user 删除用户
 	 * @apiName deleteUser
@@ -140,13 +147,14 @@ public class UserController {
 	 * @apiError (Error) {String} responseCode 错误码
 	 * @apiError (Error) {String} responseMessage 错误消息
 	 */
+	@Transactional
 	@RequestMapping(path = "/user/{id}", method = RequestMethod.DELETE)
 	public Result<?> delete(@PathVariable String id) {
 		userRepository.deleteById(id);
+		userRoleRepository.deleteById_userId(id);
 		return DefaultResult.newResult();
 	}
 
-	
 	/**
 	 * @api {get} /users 查询用户
 	 * @apiName queryUser
@@ -169,9 +177,9 @@ public class UserController {
 	 * @apiSuccess (Success) {String} payload.content.name 用户姓名
 	 * @apiSuccess (Success) {String} payload.content.email 邮箱
 	 * @apiSuccess (Success) {String} payload.content.phoneNo 电话号码
-	 * @apiSuccess (Success) {String} payload.content.gender 姓别  'M' 男 'F' 女
+	 * @apiSuccess (Success) {String} payload.content.gender 姓别 'M' 男 'F' 女
 	 * @apiSuccess (Success) {String} payload.content.remark 备注
- 	 * @apiSuccess (Success) {String} payload.content.createTime 创建时间
+	 * @apiSuccess (Success) {String} payload.content.createTime 创建时间
 	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
 	 * @apiError (Error) {String} responseCode 错误码
 	 * @apiError (Error) {String} responseMessage 错误消息
@@ -179,6 +187,38 @@ public class UserController {
 	@RequestMapping(path = "/users", method = RequestMethod.GET)
 	public Result<Page<User>> find(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, QueryUserSpec spec) {
-		return DefaultResult.newResult(userRepository.findAll(spec.toSpecification(), PageRequest.of(page, size)));
+		return DefaultResult.newResult(
+				userRepository.findBySpecification(spec, PageRequest.of(page, size, Sort.by(Fields.CREATE_TIME))));
+	}
+	
+	
+	/**
+	 * @api {get} /user/{id} 查询用户
+	 * @apiName getUser
+	 * @apiGroup User
+	 * @apiParam (PathVariable) {String} orgId 机构 id
+	 * @apiSuccess (Success) {Boolean} success 成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {String} payload.id 用户 id
+	 * @apiSuccess (Success) {String} payload.username 用户名
+	 * @apiSuccess (Success) {String} payload.name 用户姓名
+	 * @apiSuccess (Success) {String} payload.email 邮箱
+	 * @apiSuccess (Success) {String} payload.phoneNo 电话号码
+	 * @apiSuccess (Success) {String} payload.gender 姓别 'M' 男 'F' 女
+	 * @apiSuccess (Success) {String} payload.remark 备注
+	 * @apiSuccess (Success) {String} payload.createTime 创建时间
+	 * @apiSuccess (Success) {Object[]} payload.roles 岗位
+	 * @apiSuccess (Success) {String} payload.roles.id 岗位 id
+	 * @apiSuccess (Success) {String} payload.roles.name 岗位名称
+ 	 * @apiSuccess (Success) {String} payload.roles.remark 备注
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
+	@RequestMapping(path = "/user/{id}", method = RequestMethod.GET)
+	public Result<User> get(@PathVariable String id) {
+		User user = FunctionalUtils.orElseThrow(userRepository.findById(id), ErrorCodes.USER_NOT_EXIST);
+		user.setRoles(roleRepository.findByUserId(id));
+		return DefaultResult.newResult(user);
 	}
 }

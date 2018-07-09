@@ -4,6 +4,8 @@
 	<property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}" />
 	<springProfile name="dev">
 		<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+		<logger name="org.springframework.data.mybatis" level="DEBUG" additivity="true"/>
+		<logger name="org.reap" level="DEBUG" additivity="true"/>
 		<root level="INFO">
 			<appender-ref ref="CONSOLE" />
 		</root>

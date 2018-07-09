@@ -25,16 +25,15 @@ package org.reap.rbac.domain;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.mybatis.repository.support.MybatisRepository;
 
-public interface OrgRepository extends JpaRepository<Org, String> , JpaSpecificationExecutor<Org>{
-	
-	void deleteByParent(Org org);
-	
-	List<Org> findByParent(Org parent);
-	
+public interface OrgRepository extends MybatisRepository<Org, String> {
+
+	void deleteByParentId(String parentId);
+
+	List<Org> findByParentId(String parentId);
+
 	boolean existsByCode(String code);
-	
+
 	boolean existsByName(String name);
 }

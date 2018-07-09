@@ -9,8 +9,13 @@ export function queryAll () {
   return request('/apis/reap-rbac/roles/all', { method: 'GET' })
 }
 
+
+export function findFunctions (roleId) {
+  return request(`/apis/reap-rbac/role/${roleId}/functions`, { method: 'GET' })
+}
+
 export function query (specification) {
-  return request(`/apis/reap-rbac/roles?${stringify(specification)}`, { method: 'GET' })
+  return request(`/apis/reap-rbac/roles?${stringify(specification, { skipNulls: true })}`, { method: 'GET' })
 }
 
 export function update (role) {

@@ -37,7 +37,7 @@ export default {
     * query ({ page = DEFAULT_PAGE_NUMBER, size = DEFAULT_PAGE_SIZE, parentOrgId }, { call, put, select }) {
       const state = yield select(({ REAPRB0001 }) => (REAPRB0001))
       const params = {
-        size, page, parentOrgId, ...state.search,
+        size, page, parentId: parentOrgId, ...state.search,
       }
       const result = yield call(query, params)
       if (result.success) {

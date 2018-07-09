@@ -1,5 +1,5 @@
 import feedback from '../utils/feedback'
-import { create, update, query, remove } from '../apis/user'
+import { create, update, query, get, remove } from '../apis/user'
 import { queryAll, allocateRoles } from '../apis/role'
 import { orgsTree } from '../apis/org'
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '../constants'
@@ -97,9 +97,14 @@ export default {
     * showTransferModal ({ user }, { call, put }) {
       const result = yield call(queryAll)
       if (result.success) {
-        yield put({
-          type: 'setState', roles: result.payload, showTransferModal: true, user,
-        })
+        const getUserResult = yield call(get, user.id)
+        if (getUserResult.success) {
+          yield put({
+            type: 'setState', roles: result.payload, showTransferModal: true, user: getUserResult.payload,
+          })
+        } else {
+          error(getUserResult)
+        }
       } else {
         error(result)
       }

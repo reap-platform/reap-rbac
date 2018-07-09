@@ -24,27 +24,26 @@
 package org.reap.rbac.web;
 
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import org.reap.rbac.common.Constants;
-import org.reap.rbac.common.ErrorCodes;
+import org.reap.rbac.common.Fields;
+import org.reap.rbac.domain.Function;
+import org.reap.rbac.domain.FunctionRepository;
 import org.reap.rbac.domain.Role;
 import org.reap.rbac.domain.RoleRepository;
-import org.reap.rbac.domain.User;
-import org.reap.rbac.domain.UserRepository;
-import org.reap.rbac.vo.QueryRoleSpec;
+import org.reap.rbac.domain.UserRole;
+import org.reap.rbac.domain.UserRoleRepository;
 import org.reap.support.DefaultResult;
 import org.reap.support.Result;
-import org.reap.util.FunctionalUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,12 +59,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoleController {
 
 	@Autowired
-	private UserRepository userRepository;
+	private RoleRepository roleRepository;
 
 	@Autowired
-	private RoleRepository roleRepository;
-	@PersistenceContext
-	private EntityManager entityManager;
+	private UserRoleRepository userRoleRepository;
+	
+	@Autowired
+	private FunctionRepository functionRepository;
+	
 
 	/** @apiDefine Role 角色维护 */
 
@@ -83,11 +84,11 @@ public class RoleController {
 	 * @apiError (Error) {String} responseMessage 错误消息
 	 */
 	@RequestMapping(path = "/role/user/{id}", method = RequestMethod.POST)
+	@Transactional
 	public Result<?> allocateRoles(@PathVariable String id, @RequestBody String[] roleIds) {
-		User user = FunctionalUtils.orElseThrow(userRepository.findById(id), ErrorCodes.USER_NOT_EXIST);
-		List<Role> roles = roleRepository.findAllById(Arrays.asList(roleIds));
-		user.setRoles(new HashSet<>(roles));
-		userRepository.save(user);
+		userRoleRepository.deleteById_userId(id);
+		userRoleRepository.insertAll(
+				Arrays.asList(roleIds).stream().map(roleId -> UserRole.of(id, roleId)).collect(Collectors.toList()));
 		return DefaultResult.newResult();
 	}
 
@@ -130,7 +131,6 @@ public class RoleController {
 	 */
 	@RequestMapping(path = "/role", method = RequestMethod.POST)
 	public Result<Role> create(@RequestBody Role role) {
-		role.setCreateTime(new Date());
 		roleRepository.save(role);
 		return DefaultResult.newResult(role);
 	}
@@ -155,9 +155,7 @@ public class RoleController {
 	 */
 	@RequestMapping(path = "/role", method = RequestMethod.PUT)
 	public Result<Role> update(@RequestBody Role role) {
-		Role entity = FunctionalUtils.orElseThrow(roleRepository.findById(role.getId()), ErrorCodes.ROLE_NOT_EXIST);
-		BeanUtils.copyProperties(role, entity, "users");
-		roleRepository.save(entity);
+		roleRepository.updateIgnoreNull(role);
 		return DefaultResult.newResult(role);
 	}
 
@@ -175,13 +173,7 @@ public class RoleController {
 	@RequestMapping(path = "/role/{id}", method = RequestMethod.DELETE)
 	@Transactional
 	public Result<?> delete(@PathVariable String id) {
-		// 关联删除用户表映射记录
-		Role role = roleRepository.findById(id).get();
-		List<User> users = role.getUsers();
-		users.forEach(user -> {
-			user.getRoles().remove(role);
-		});
-		userRepository.saveAll(users);
+		userRoleRepository.deleteById_RoleId(id);
 		roleRepository.deleteById(id);
 		return DefaultResult.newResult();
 	}
@@ -210,7 +202,34 @@ public class RoleController {
 	 */
 	@RequestMapping(path = "/roles", method = RequestMethod.GET)
 	public Result<Page<Role>> find(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
-			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, QueryRoleSpec spec) {
-		return DefaultResult.newResult(roleRepository.findAll(spec.toSpecification(), PageRequest.of(page, size)));
+			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, Role role) {
+		Example<Role> example = Example.of(role, ExampleMatcher.matching());
+		return DefaultResult.newResult(
+				roleRepository.findAll(example, PageRequest.of(page, size, Sort.by(Fields.NAME))));
+	}
+	
+	
+	/**
+	 * @api {get} /role/{id}/functions 查询角色
+	 * @apiName queryRole
+	 * @apiGroup Role
+	 * @apiParam (PathVariable) {String} [roleId] 角色 id
+	 * @apiSuccess (Success) {Boolean} success 成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object[]} payload 响应数据
+	 * @apiSuccess (Success) {String} payload.id 功能 id
+	 * @apiSuccess (Success) {String} payload.serviceId 归属系统
+	 * @apiSuccess (Success) {String} payload.code 功能码
+	 * @apiSuccess (Success) {String} payload.name 功能名称
+	 * @apiSuccess (Success) {String} payload.type 类型 'M' 菜单 'O' 操作
+	 * @apiSuccess (Success) {String} payload.action 动作
+	 * @apiSuccess (Success) {String} payload.remark 备注
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
+	@RequestMapping(path = "/role/{id}/functions", method = RequestMethod.GET)
+	public Result<List<Function>> findFunctions(@PathVariable String id) {
+		return DefaultResult.newResult(functionRepository.findByRoleId(id));
 	}
 }

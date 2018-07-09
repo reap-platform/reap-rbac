@@ -1,5 +1,5 @@
 import feedback from '../utils/feedback'
-import { create, update, query, remove } from '../apis/role'
+import { create, update, query, remove, findFunctions } from '../apis/role'
 import { queryAll, allocateFunctions } from '../apis/function'
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '../constants'
 
@@ -73,9 +73,15 @@ export default {
     * showTransferModal ({ role }, { call, put }) {
       const result = yield call(queryAll)
       if (result.success) {
-        yield put({
-          type: 'setState', functions: result.payload, showTransferModal: true, role,
-        })
+        const functionsResult = yield call(findFunctions, role.id)
+        if (functionsResult.success) {
+          role.functions = functionsResult.payload
+          yield put({
+            type: 'setState', functions: result.payload, showTransferModal: true, role,
+          })
+        } else {
+          error(result)
+        }
       } else {
         error(result)
       }

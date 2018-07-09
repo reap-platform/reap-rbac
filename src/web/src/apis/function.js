@@ -10,7 +10,7 @@ export function queryAll () {
 }
 
 export function query (specification) {
-  return request(`/apis/reap-rbac/functions?${stringify(specification)}`, { method: 'GET' })
+  return request(`/apis/reap-rbac/functions?${stringify(specification, { skipNulls: true })}`, { method: 'GET' })
 }
 
 export function update (func) {

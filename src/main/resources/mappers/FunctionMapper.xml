@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.reap.rbac.domain.Function">
+
+	<select id="findByRoleId" resultMap="ResultMap" lang="XML">
+		select 
+			"function".id as "id",
+			"function".service_id as "serviceId",
+			"function".code as "code",
+			"function".name as "name",
+			"function".type as "type",
+			"function".action as "action",
+			"function".remark as "remark" 
+	    from function "function"  left join role_function  "role_function" on "function".id  = "role_function".function_id
+
+		where "role_function".role_id = #{roleId}
+	</select>
+</mapper>

@@ -1,39 +1,28 @@
 
 package org.reap.rbac.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class Function {
 
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@GeneratedValue
 	private String id;
 
-	@Column(nullable = false, unique = true)
 	private String serviceId;
 
-	@Column(nullable = false, unique = true)
 	private String code;
 
-	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	private String type;
 
 	private String action;
 
 	private String remark;
-
-//	@ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-//	private Role role;
 
 	public String getCode() {
 		return code;

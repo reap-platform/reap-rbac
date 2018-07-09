@@ -93,7 +93,7 @@ const Component = ({
                 dispatch({
                   type: 'REAPRB0003/setState',
                   search: {
-                    name: value,
+                    name: value || null,
                   },
                 })
               }}
