@@ -3,7 +3,7 @@ package org.reap.rbac.domain;
 
 import java.util.List;
 
-import org.springframework.data.mybatis.annotations.Native;
+import org.springframework.data.mybatis.annotations.Statement;
 import org.springframework.data.mybatis.repository.support.MybatisRepository;
 
 public interface FunctionRepository extends MybatisRepository<Function, String> {
@@ -12,6 +12,6 @@ public interface FunctionRepository extends MybatisRepository<Function, String> 
 
 	boolean existsByName(String name);
 
-	@Native
+	@Statement
 	List<Function> findByRoleId(String roleId);
 }

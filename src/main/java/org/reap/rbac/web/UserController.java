@@ -37,7 +37,6 @@ import org.reap.rbac.domain.UserRepository;
 import org.reap.rbac.domain.UserRoleRepository;
 import org.reap.rbac.util.MD5Utils;
 import org.reap.rbac.vo.QueryUserSpec;
-import org.reap.support.DefaultResult;
 import org.reap.support.Result;
 import org.reap.util.Assert;
 import org.reap.util.FunctionalUtils;
@@ -104,7 +103,7 @@ public class UserController {
 		Optional<Org> org = orgRepository.findById(orgId);
 		user.setOrg(FunctionalUtils.orElseThrow(org, ErrorCodes.ORG_NOT_EXIST));
 		user.setPassword(MD5Utils.encode(user.getPassword(), salt));
-		return DefaultResult.newResult(userRepository.save(user));
+		return Result.newResult(userRepository.save(user));
 	}
 
 	private void validate(User user) {
@@ -133,7 +132,7 @@ public class UserController {
 	@RequestMapping(path = "/user", method = RequestMethod.PUT)
 	public Result<?> update(@RequestBody User user) {
 		userRepository.updateIgnoreNull(user);
-		return DefaultResult.newResult();
+		return Result.newResult();
 	}
 
 	/**
@@ -152,7 +151,7 @@ public class UserController {
 	public Result<?> delete(@PathVariable String id) {
 		userRepository.deleteById(id);
 		userRoleRepository.deleteById_userId(id);
-		return DefaultResult.newResult();
+		return Result.newResult();
 	}
 
 	/**
@@ -187,7 +186,7 @@ public class UserController {
 	@RequestMapping(path = "/users", method = RequestMethod.GET)
 	public Result<Page<User>> find(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, QueryUserSpec spec) {
-		return DefaultResult.newResult(
+		return Result.newResult(
 				userRepository.findBySpecification(spec, PageRequest.of(page, size, Sort.by(Fields.CREATE_TIME))));
 	}
 	
@@ -219,6 +218,6 @@ public class UserController {
 	public Result<User> get(@PathVariable String id) {
 		User user = FunctionalUtils.orElseThrow(userRepository.findById(id), ErrorCodes.USER_NOT_EXIST);
 		user.setRoles(roleRepository.findByUserId(id));
-		return DefaultResult.newResult(user);
+		return Result.newResult(user);
 	}
 }

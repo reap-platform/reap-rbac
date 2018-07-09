@@ -12,7 +12,6 @@ import org.reap.rbac.domain.Function;
 import org.reap.rbac.domain.FunctionRepository;
 import org.reap.rbac.domain.RoleFunction;
 import org.reap.rbac.domain.RoleFunctionRepository;
-import org.reap.support.DefaultResult;
 import org.reap.support.Result;
 import org.reap.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,7 @@ public class FunctionController {
 		roleFunctionRepository.insertAll(
 				Arrays.asList(functionIds).stream().map(functionId -> RoleFunction.of(id, functionId)).collect(
 						Collectors.toList()));
-		return DefaultResult.newResult();
+		return Result.newResult();
 	}
 
 	/**
@@ -84,7 +83,7 @@ public class FunctionController {
 	 */
 	@RequestMapping(path = "/functions/all", method = RequestMethod.GET)
 	public Result<List<Function>> findAll() {
-		return DefaultResult.newResult(functionRepository.findAll());
+		return Result.newResult(functionRepository.findAll());
 	}
 
 	/**
@@ -114,7 +113,7 @@ public class FunctionController {
 	@RequestMapping(path = "/function", method = RequestMethod.POST)
 	public Result<Function> create(@RequestBody Function function) {
 		validate(function);
-		return DefaultResult.newResult(functionRepository.save(function));
+		return Result.newResult(functionRepository.save(function));
 	}
 
 	/**
@@ -132,7 +131,7 @@ public class FunctionController {
 	public Result<?> delete(@PathVariable String id) {
 		roleFunctionRepository.deleteById_FunctionId(id);
 		functionRepository.deleteById(id);
-		return DefaultResult.newResult();
+		return Result.newResult();
 	}
 
 	/**
@@ -162,7 +161,7 @@ public class FunctionController {
 	 */
 	@RequestMapping(path = "/function", method = RequestMethod.PUT)
 	public Result<Function> update(@RequestBody Function function) {
-		return DefaultResult.newResult(functionRepository.updateIgnoreNull(function));
+		return Result.newResult(functionRepository.updateIgnoreNull(function));
 	}
 
 	/**
@@ -198,7 +197,7 @@ public class FunctionController {
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, Function spec) {
 		Example<Function> example = Example.of(spec,
 				ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING));
-		return DefaultResult.newResult(
+		return Result.newResult(
 				functionRepository.findAll(example, PageRequest.of(page, size, Sort.by(Fields.CODE))));
 	}
 

@@ -35,7 +35,6 @@ import org.reap.rbac.domain.Org;
 import org.reap.rbac.domain.OrgRepository;
 import org.reap.rbac.domain.User;
 import org.reap.rbac.domain.UserRepository;
-import org.reap.support.DefaultResult;
 import org.reap.support.Result;
 import org.reap.util.Assert;
 import org.reap.util.FunctionalUtils;
@@ -97,7 +96,7 @@ public class OrgController {
 		parent.setLeaf(Constants.LEAF_FLAG_N);
 		orgRepository.save(parent);
 		org.setParentId(id);
-		return DefaultResult.newResult(orgRepository.save(org));
+		return Result.newResult(orgRepository.save(org));
 	}
 
 	/**
@@ -120,7 +119,7 @@ public class OrgController {
 	@RequestMapping(path = "/org", method = RequestMethod.POST)
 	public Result<Org> createRootOrg(@RequestBody Org org) {
 		validate(org);
-		return DefaultResult.newResult(orgRepository.save(org));
+		return Result.newResult(orgRepository.save(org));
 	}
 
 	/**
@@ -145,7 +144,7 @@ public class OrgController {
 			orgRepository.saveAll(childs);
 		}
 		orgRepository.delete(org);
-		return DefaultResult.newResult();
+		return Result.newResult();
 	}
 
 	/**
@@ -171,7 +170,7 @@ public class OrgController {
 		Org persisted = FunctionalUtils.orElseThrow(orgRepository.findById(org.getId()), ErrorCodes.ORG_NOT_EXIST);
 		persisted.setName(org.getName());
 		persisted.setRemark(org.getRemark());
-		return DefaultResult.newResult(orgRepository.save(org));
+		return Result.newResult(orgRepository.save(org));
 	}
 
 	/**
@@ -206,7 +205,7 @@ public class OrgController {
 	public Result<Page<User>> findUserByOrgId(@PathVariable String id,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size) {
-		return DefaultResult.newResult(userRepository.findByOrgId(id, PageRequest.of(page, size)));
+		return Result.newResult(userRepository.findByOrgId(id, PageRequest.of(page, size)));
 	}
 
 	/**
@@ -238,7 +237,7 @@ public class OrgController {
 		Example<Org> example = Example.of(spec,
 				ExampleMatcher.matching().withIgnoreNullValues().withIgnoreCase().withStringMatcher(
 						StringMatcher.CONTAINING));
-		return DefaultResult.newResult(
+		return Result.newResult(
 				orgRepository.findAll(example, PageRequest.of(page, size, Sort.by(Fields.CODE))));
 	}
 
@@ -276,7 +275,7 @@ public class OrgController {
 				orgMapping.get(o.getParentId()).addChild(o);
 			}
 		}
-		return DefaultResult.newResult(
+		return Result.newResult(
 				orgs.stream().filter((o) -> o.getParentId() == null).sorted(Comparator.comparing(Org::getCode)).collect(
 						Collectors.toList()));
 	}
@@ -303,7 +302,7 @@ public class OrgController {
 	 */
 	@RequestMapping(path = "/org/{id}", method = RequestMethod.GET)
 	public Result<Org> findOne(@PathVariable String id) {
-		return DefaultResult.newResult(
+		return Result.newResult(
 				FunctionalUtils.orElseThrow(orgRepository.findById(id), ErrorCodes.ORG_NOT_EXIST));
 	}
 

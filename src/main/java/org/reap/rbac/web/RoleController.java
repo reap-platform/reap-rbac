@@ -35,7 +35,6 @@ import org.reap.rbac.domain.Role;
 import org.reap.rbac.domain.RoleRepository;
 import org.reap.rbac.domain.UserRole;
 import org.reap.rbac.domain.UserRoleRepository;
-import org.reap.support.DefaultResult;
 import org.reap.support.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -89,7 +88,7 @@ public class RoleController {
 		userRoleRepository.deleteById_userId(id);
 		userRoleRepository.insertAll(
 				Arrays.asList(roleIds).stream().map(roleId -> UserRole.of(id, roleId)).collect(Collectors.toList()));
-		return DefaultResult.newResult();
+		return Result.newResult();
 	}
 
 	/**
@@ -109,7 +108,7 @@ public class RoleController {
 	 */
 	@RequestMapping(path = "/roles/all", method = RequestMethod.GET)
 	public Result<List<Role>> findAll() {
-		return DefaultResult.newResult(roleRepository.findAll());
+		return Result.newResult(roleRepository.findAll());
 	}
 
 	/**
@@ -132,7 +131,7 @@ public class RoleController {
 	@RequestMapping(path = "/role", method = RequestMethod.POST)
 	public Result<Role> create(@RequestBody Role role) {
 		roleRepository.save(role);
-		return DefaultResult.newResult(role);
+		return Result.newResult(role);
 	}
 
 	/**
@@ -156,7 +155,7 @@ public class RoleController {
 	@RequestMapping(path = "/role", method = RequestMethod.PUT)
 	public Result<Role> update(@RequestBody Role role) {
 		roleRepository.updateIgnoreNull(role);
-		return DefaultResult.newResult(role);
+		return Result.newResult(role);
 	}
 
 	/**
@@ -175,7 +174,7 @@ public class RoleController {
 	public Result<?> delete(@PathVariable String id) {
 		userRoleRepository.deleteById_RoleId(id);
 		roleRepository.deleteById(id);
-		return DefaultResult.newResult();
+		return Result.newResult();
 	}
 
 	/**
@@ -204,7 +203,7 @@ public class RoleController {
 	public Result<Page<Role>> find(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, Role role) {
 		Example<Role> example = Example.of(role, ExampleMatcher.matching());
-		return DefaultResult.newResult(
+		return Result.newResult(
 				roleRepository.findAll(example, PageRequest.of(page, size, Sort.by(Fields.NAME))));
 	}
 	
@@ -230,6 +229,6 @@ public class RoleController {
 	 */
 	@RequestMapping(path = "/role/{id}/functions", method = RequestMethod.GET)
 	public Result<List<Function>> findFunctions(@PathVariable String id) {
-		return DefaultResult.newResult(functionRepository.findByRoleId(id));
+		return Result.newResult(functionRepository.findByRoleId(id));
 	}
 }

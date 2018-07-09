@@ -25,11 +25,11 @@ package org.reap.rbac.domain;
 
 import java.util.List;
 
-import org.springframework.data.mybatis.annotations.Native;
+import org.springframework.data.mybatis.annotations.Statement;
 import org.springframework.data.mybatis.repository.support.MybatisRepository;
 
 public interface RoleRepository extends MybatisRepository<Role, String> {
 
-	@Native
+	@Statement
 	List<Role> findByUserId(String userId);
 }

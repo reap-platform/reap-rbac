@@ -26,7 +26,6 @@ package org.reap.rbac.web;
 import org.reap.rbac.domain.User;
 import org.reap.rbac.service.UserService;
 import org.reap.rbac.util.MD5Utils;
-import org.reap.support.DefaultResult;
 import org.reap.support.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,6 +88,6 @@ public class AuthenticationController {
 	 */
 	@RequestMapping(path = "/authentication", method = RequestMethod.POST)
 	public Result<User> authentication(@RequestParam String username, @RequestParam String password) {
-		return DefaultResult.newResult(userService.logon(username, MD5Utils.encode(password, salt)));
+		return Result.newResult(userService.logon(username, MD5Utils.encode(password, salt)));
 	}
 }

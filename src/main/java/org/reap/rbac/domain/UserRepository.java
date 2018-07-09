@@ -28,8 +28,8 @@ import java.util.Optional;
 import org.reap.rbac.vo.QueryUserSpec;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mybatis.annotations.Native;
-import org.springframework.data.mybatis.annotations.Native.Operation;
+import org.springframework.data.mybatis.annotations.Statement;
+import org.springframework.data.mybatis.annotations.Statement.Type;
 import org.springframework.data.mybatis.repository.support.MybatisRepository;
 
 public interface UserRepository extends MybatisRepository<User, String> {
@@ -42,6 +42,6 @@ public interface UserRepository extends MybatisRepository<User, String> {
 
 	Page<User> findByOrgId(String orgId, Pageable pageable);
 
-	@Native(operation= Operation.PAGE)
+	@Statement(type= Type.PAGE)
 	Page<User> findBySpecification(QueryUserSpec queryUserSpec, Pageable pageable);
 }
