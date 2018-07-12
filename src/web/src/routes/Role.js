@@ -18,7 +18,7 @@ export default ({
             selectedKeys={selectedKeys}
             dispatch={dispatch}
             showCreateModal={showCreateModal}
-            loading={effects['REAPRB0003/query']}
+            loading={effects['Role/query']}
           />
         </Card>
       </Row>

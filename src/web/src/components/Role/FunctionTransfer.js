@@ -6,13 +6,13 @@ export default ({
 }) => {
   const handleChange = (nextTargetKeys) => {
     dispatch({
-      type: 'REAPRB0003/setState',
+      type: 'Role/setState',
       role: { ...role, functions: functions.filter(r => nextTargetKeys.includes(r.id)) },
     })
   }
 
   const handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
-    dispatch({ type: 'REAPRB0003/setState', selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] })
+    dispatch({ type: 'Role/setState', selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] })
   }
 
   return (
@@ -20,10 +20,10 @@ export default ({
       width={800}
       visible={showTransferModal}
       onOk={() => {
-        dispatch({ type: 'REAPRB0003/allocateFunction' })
+        dispatch({ type: 'Role/allocateFunction' })
   }}
       onCancel={() => {
-    dispatch({ type: 'REAPRB0003/resetFunctionState' })
+    dispatch({ type: 'Role/resetFunctionState' })
   }}
     >
       <Transfer

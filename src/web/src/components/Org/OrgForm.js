@@ -22,20 +22,20 @@ const Component = ({
     <div>
       <Button type="primary"
         icon="plus"
-        onClick={() => (dispatch({ type: 'REAPRB0001/setState', showCreateModal: true }))}
+        onClick={() => (dispatch({ type: 'Org/setState', showCreateModal: true }))}
       >新增</Button>
       <Modal title="新增机构"
         visible={showCreateModal}
         onOk={() => {
           form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-              dispatch({ type: 'REAPRB0001/create', org: values })
+              dispatch({ type: 'Org/create', org: values })
               form.resetFields()
             }
           })
         }}
         onCancel={() => {
-          dispatch({ type: 'REAPRB0001/setState', showCreateModal: false })
+          dispatch({ type: 'Org/setState', showCreateModal: false })
           form.resetFields()
         }}
       >

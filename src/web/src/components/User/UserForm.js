@@ -25,19 +25,19 @@ const Component = ({
     <div>
       <Button type="primary"
         icon="plus"
-        onClick={() => (dispatch({ type: 'REAPRB0002/setState', showCreateModal: true }))}
+        onClick={() => (dispatch({ type: 'User/setState', showCreateModal: true }))}
       >新增</Button>
       <Modal title="新增机构"
         visible={showCreateModal}
         onOk={() => {
           form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-              dispatch({ type: 'REAPRB0002/create', user: values, form })
+              dispatch({ type: 'User/create', user: values, form })
             }
           })
         }}
         onCancel={() => {
-          dispatch({ type: 'REAPRB0002/setState', showCreateModal: false })
+          dispatch({ type: 'User/setState', showCreateModal: false })
           form.resetFields()
         }}
       >
@@ -51,7 +51,7 @@ const Component = ({
             rules: [{
               required: true, message: '请选择机构',
             }],
-          })(<OrgSelect orgs={orgs} onFocus={() => dispatch({ type: 'REAPRB0002/orgTree' })} />)
+          })(<OrgSelect orgs={orgs} onFocus={() => dispatch({ type: 'User/orgTree' })} />)
            }
           </FormItem>
 

@@ -21,7 +21,7 @@ const Component = ({
     return (value) => {
       const updateOrg = page.content.find(o => o.id === key)
       updateOrg[dataIndex] = value
-      dispatch({ type: 'REAPRB0001/update', org: updateOrg })
+      dispatch({ type: 'Org/update', org: updateOrg })
     }
   }
   const columns = [
@@ -75,7 +75,7 @@ const Component = ({
         return (
           page && page.content && page.content.length > 0 ?
             (
-              <Popconfirm title="确认删除?" onConfirm={() => dispatch({ type: 'REAPRB0001/delete', id: record.id })}>
+              <Popconfirm title="确认删除?" onConfirm={() => dispatch({ type: 'Org/delete', id: record.id })}>
                 <a href="#">删除</a>
               </Popconfirm>
             ) : null
@@ -95,7 +95,7 @@ const Component = ({
                   onChange={(e) => {
                 const { value } = e.target
                 dispatch({
-                  type: 'REAPRB0001/setState',
+                  type: 'Org/setState',
                   search: {
                     code: value,
                   },
@@ -110,7 +110,7 @@ const Component = ({
                   onChange={(e) => {
               const { value } = e.target
               dispatch({
-                type: 'REAPRB0001/setState',
+                type: 'Org/setState',
                 search: {
                   name: value,
                 },
@@ -126,7 +126,7 @@ const Component = ({
                   htmlType="button"
                   icon="search"
                   onClick={
-                () => dispatch({ type: 'REAPRB0001/query', parentOrgId: selected && selected.key })
+                () => dispatch({ type: 'Org/query', parentOrgId: selected && selected.key })
               }
                 >
             查询
@@ -144,9 +144,9 @@ const Component = ({
         <Table dataSource={page && page.content}
           pagination={{
             total: page && page.totalElements,
-            showTotal: total => `总记录数 ${total} `,
+            showTotal: total => `总记录数 ${total}`,
             onChange: (number, size) => (dispatch({
-              type: 'REAPRB0001/query', page: number - 1, size, parentOrgId: selected && selected.key,
+              type: 'Org/query', page: number - 1, size, parentOrgId: selected && selected.key,
              })),
         }}
           columns={columns}

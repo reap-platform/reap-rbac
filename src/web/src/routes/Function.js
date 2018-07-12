@@ -10,7 +10,7 @@ export default ({
     <div className={styles.functionContainer}>
       <Row>
         <Card title="功能码维护" bordered={false}>
-          <FunctionList page={page} dispatch={dispatch} showCreateModal={showCreateModal} loading={effects['REAPRB0004/query']} />
+          <FunctionList page={page} dispatch={dispatch} showCreateModal={showCreateModal} loading={effects['Function/query']} />
         </Card>
       </Row>
     </div>

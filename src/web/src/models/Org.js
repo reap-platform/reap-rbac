@@ -35,7 +35,7 @@ export default {
       }
     },
     * query ({ page = DEFAULT_PAGE_NUMBER, size = DEFAULT_PAGE_SIZE, parentOrgId }, { call, put, select }) {
-      const state = yield select(({ REAPRB0001 }) => (REAPRB0001))
+      const state = yield select(({ Org }) => (Org))
       const params = {
         size, page, parentId: parentOrgId, ...state.search,
       }
@@ -45,7 +45,7 @@ export default {
       }
     },
     * update ({ org }, { call, put, select }) {
-      const state = yield select(({ REAPRB0001 }) => (REAPRB0001))
+      const state = yield select(({ Org }) => (Org))
       const result = yield call(update, org)
       if (result.success) {
         yield put({
@@ -65,7 +65,7 @@ export default {
     * delete ({ id }, { call, put, select }) {
       const result = yield call(remove, id)
       if (result.success) {
-        const state = yield select(({ REAPRB0001 }) => (REAPRB0001))
+        const state = yield select(({ Org }) => (Org))
         if (state.selected && state.selected.key === id) {
           yield put({ type: 'setState', selected: null })
           yield put({ type: 'query', ...orgsSpec(state), parentOrgId: null })
@@ -78,7 +78,7 @@ export default {
       }
     },
     * create ({ org }, { call, select, put }) {
-      const state = yield select(({ REAPRB0001 }) => (REAPRB0001))
+      const state = yield select(({ Org }) => (Org))
       const result = yield call(create, state.selected && state.selected.key, org)
       yield put({ type: 'setState', showCreateModal: false })
       if (result.success) {
@@ -98,9 +98,9 @@ export default {
     },
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
+    setup ({ context, dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/REAPRB0001') {
+        if (location.pathname === `/${context.code}`) {
           dispatch({ type: 'orgTree' })
           dispatch({ type: 'query', page: DEFAULT_PAGE_NUMBER, size: DEFAULT_PAGE_SIZE })
         }

@@ -20,7 +20,7 @@ function getRouterData (app) {
       model.state = {}
     }
     if (!model.namespace) {
-      model.namespace = aFunction.code
+      model.namespace = aFunction.name || aFunction.code
     }
     if (!model.effects) {
       model.effects = {}
@@ -41,7 +41,7 @@ function getRouterData (app) {
     routerData[aFunction.code] = {
       // 在框架中自动 connect ，如果在功能码中有配置 connect 函数使用 功能码配置中的，否则使用默认的，默认将会根据匹配功能码下的状态以及当前功能码下的 loading 状态
       // eslint-disable-next-line
-      component: connect(aFunction.connect ? aFunction.connect : state => ({ ...state[aFunction.code], context: aFunction ,loading: state.loading.models[aFunction.code],effects: state.loading.effects }))(require(`./routes/${aFunction.name ? aFunction.name : aFunction.code}.js`)),
+      component: connect(aFunction.connect ? aFunction.connect : state => ({ ...state[aFunction.name||aFunction.code], context: aFunction ,loading: state.loading.models[aFunction.name||aFunction.code],effects: state.loading.effects }))(require(`./routes/${aFunction.name||aFunction.code}.js`)),
     }
   })
   return routerData

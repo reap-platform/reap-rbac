@@ -30,7 +30,7 @@ export default {
   },
   effects: {
     * query ({ page = DEFAULT_PAGE_NUMBER, size = DEFAULT_PAGE_SIZE }, { call, put, select }) {
-      const state = yield select(({ REAPRB0003 }) => (REAPRB0003))
+      const state = yield select(({ Role }) => (Role))
       const params = {
         size, page, ...state.search,
       }
@@ -40,7 +40,7 @@ export default {
       }
     },
     * update ({ role }, { call, put, select }) {
-      const state = yield select(({ REAPRB0003 }) => (REAPRB0003))
+      const state = yield select(({ Role }) => (Role))
       const result = yield call(update, role)
       if (result.success) {
         yield put({
@@ -53,14 +53,14 @@ export default {
     * delete ({ id }, { call, put, select }) {
       const result = yield call(remove, id)
       if (result.success) {
-        const state = yield select(({ REAPRB0003 }) => (REAPRB0003))
+        const state = yield select(({ Role }) => (Role))
         yield put({ type: 'query', ...roleSpec(state) })
       } else {
         error(result)
       }
     },
     * create ({ role, form }, { call, select, put }) {
-      const state = yield select(({ REAPRB0003 }) => (REAPRB0003))
+      const state = yield select(({ Role }) => (Role))
       const result = yield call(create, role)
       if (result.success) {
         form.resetFields()
@@ -87,7 +87,7 @@ export default {
       }
     },
     * allocateFunction (action, { call, select, put }) {
-      const state = yield select(({ REAPRB0003 }) => (REAPRB0003))
+      const state = yield select(({ Role }) => (Role))
       const result = yield call(allocateFunctions, state.role.id, state.role.functions && state.role.functions.map(r => r.id))
       if (result.success) {
         yield put({ type: 'query', ...roleSpec(state) })
@@ -115,9 +115,9 @@ export default {
     },
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
+    setup ({ context, dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/REAPRB0003') {
+        if (location.pathname === `/${context.code}`) {
           dispatch({ type: 'query', page: DEFAULT_PAGE_NUMBER, size: DEFAULT_PAGE_SIZE })
         }
       })

@@ -48,7 +48,7 @@ export default {
       }
     },
     * query ({ page = DEFAULT_PAGE_NUMBER, size = DEFAULT_PAGE_SIZE, orgId }, { call, put, select }) {
-      const state = yield select(({ REAPRB0002 }) => (REAPRB0002))
+      const state = yield select(({ User }) => (User))
       const params = {
         size, page, orgId, ...state.search,
       }
@@ -58,7 +58,7 @@ export default {
       }
     },
     * update ({ user }, { call, put, select }) {
-      const state = yield select(({ REAPRB0002 }) => (REAPRB0002))
+      const state = yield select(({ User }) => (User))
       const result = yield call(update, user)
       if (result.success) {
         yield put({
@@ -77,14 +77,14 @@ export default {
     * delete ({ id }, { call, put, select }) {
       const result = yield call(remove, id)
       if (result.success) {
-        const state = yield select(({ REAPRB0002 }) => (REAPRB0002))
+        const state = yield select(({ User }) => (User))
         yield put({ type: 'query', ...usersSpec(state) })
       } else {
         error(result)
       }
     },
     * create ({ user, form }, { call, select, put }) {
-      const state = yield select(({ REAPRB0002 }) => (REAPRB0002))
+      const state = yield select(({ User }) => (User))
       const result = yield call(create, user)
       if (result.success) {
         form.resetFields()
@@ -110,7 +110,7 @@ export default {
       }
     },
     * allocateRole (action, { call, select, put }) {
-      const state = yield select(({ REAPRB0002 }) => (REAPRB0002))
+      const state = yield select(({ User }) => (User))
       const result = yield call(allocateRoles, state.user.id, state.user.roles && state.user.roles.map(r => r.id))
       if (result.success) {
         yield put({ type: 'query', ...usersSpec(state) })
@@ -138,9 +138,9 @@ export default {
     },
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
+    setup ({ context, dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/REAPRB0002') {
+        if (location.pathname === `/${context.code}`) {
           dispatch({ type: 'orgTree' })
           dispatch({ type: 'query', page: DEFAULT_PAGE_NUMBER, size: DEFAULT_PAGE_SIZE })
         }

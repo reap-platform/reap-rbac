@@ -23,7 +23,7 @@ const Component = ({
     return (value) => {
       const update = page.content.find(o => o.id === key)
       update[dataIndex] = value
-      dispatch({ type: 'REAPRB0002/update', user: update })
+      dispatch({ type: 'User/update', user: update })
     }
   }
   const columns = [
@@ -107,14 +107,14 @@ const Component = ({
       dataIndex: 'operation',
       render: (text, record) =>
         (<span>
-          <Popconfirm title="确认删除?" onConfirm={() => dispatch({ type: 'REAPRB0002/delete', id: record.id })}>
+          <Popconfirm title="确认删除?" onConfirm={() => dispatch({ type: 'User/delete', id: record.id })}>
             <a href="#">删除</a>
           </Popconfirm>
           <Divider type="vertical" />
           <a href="#"
             onClick={(e) => {
               e.preventDefault()
-              dispatch({ type: 'REAPRB0002/showTransferModal', user: record })
+              dispatch({ type: 'User/showTransferModal', user: record })
           }}
           >分配角色</a>
         </span>),
@@ -133,10 +133,10 @@ const Component = ({
                   orgs={orgs}
                   multiple
                   value={search.orgIds}
-                  onFocus={() => dispatch({ type: 'REAPRB0002/orgTree' })}
+                  onFocus={() => dispatch({ type: 'User/orgTree' })}
                   onChange={(value) => {
                 dispatch({
-                  type: 'REAPRB0002/setState',
+                  type: 'User/setState',
                   search: {
                     orgIds: value || null,
                   },
@@ -152,7 +152,7 @@ const Component = ({
                   onChange={(e) => {
                 const { value } = e.target
                 dispatch({
-                  type: 'REAPRB0002/setState',
+                  type: 'User/setState',
                   search: {
                     username: value || null,
                   },
@@ -167,7 +167,7 @@ const Component = ({
                   onChange={(e) => {
               const { value } = e.target
               dispatch({
-                type: 'REAPRB0002/setState',
+                type: 'User/setState',
                 search: {
                   name: value || null,
                 },
@@ -184,7 +184,7 @@ const Component = ({
                   onChange={(e) => {
               const { value } = e.target
               dispatch({
-                type: 'REAPRB0002/setState',
+                type: 'User/setState',
                 search: {
                   email: value || null,
                 },
@@ -199,7 +199,7 @@ const Component = ({
                   onChange={(e) => {
               const { value } = e.target
               dispatch({
-                type: 'REAPRB0002/setState',
+                type: 'User/setState',
                 search: {
                   phoneNo: value || null,
                 },
@@ -210,7 +210,7 @@ const Component = ({
             </Col>
             <Col md={8} sm={24}>
               <Item {...formItemLayout}>
-                <Button type="primary" htmlType="button" icon="search" onClick={() => dispatch({ type: 'REAPRB0002/query', orgId: selected && selected.key })}>
+                <Button type="primary" htmlType="button" icon="search" onClick={() => dispatch({ type: 'User/query', orgId: selected && selected.key })}>
                   查询
                 </Button>
               </Item>
@@ -230,7 +230,7 @@ const Component = ({
             total: page && page.totalElements,
             showTotal: total => `总记录数 ${total} `,
             onChange: (number, size) => (dispatch({
-              type: 'REAPRB0002/query', page: number - 1, size, parentOrgId: selected && selected.key,
+              type: 'User/query', page: number - 1, size, parentOrgId: selected && selected.key,
              })),
         }}
           columns={columns}

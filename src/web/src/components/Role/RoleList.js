@@ -22,7 +22,7 @@ const Component = ({
     return (value) => {
       const update = page.content.find(o => o.id === key)
       update[dataIndex] = value
-      dispatch({ type: 'REAPRB0003/update', role: update })
+      dispatch({ type: 'Role/update', role: update })
     }
   }
   const columns = [
@@ -65,14 +65,14 @@ const Component = ({
         return (
 
           <span>
-            <Popconfirm title="确认删除?" onConfirm={() => dispatch({ type: 'REAPRB0003/delete', id: record.id })}>
+            <Popconfirm title="确认删除?" onConfirm={() => dispatch({ type: 'Role/delete', id: record.id })}>
               <a href="#">删除</a>
             </Popconfirm>
             <Divider type="vertical" />
             <a href="#"
               onClick={(e) => {
               e.preventDefault()
-              dispatch({ type: 'REAPRB0003/showTransferModal', role: record })
+              dispatch({ type: 'Role/showTransferModal', role: record })
           }}
             >分配功能</a>
           </span>
@@ -91,7 +91,7 @@ const Component = ({
                 onChange={(e) => {
                 const { value } = e.target
                 dispatch({
-                  type: 'REAPRB0003/setState',
+                  type: 'Role/setState',
                   search: {
                     name: value || null,
                   },
@@ -107,7 +107,7 @@ const Component = ({
                 htmlType="button"
                 icon="search"
                 onClick={
-                () => dispatch({ type: 'REAPRB0003/query' })
+                () => dispatch({ type: 'Role/query' })
               }
               >
             查询
@@ -135,7 +135,7 @@ const Component = ({
           pagination={{
             total: page && page.totalElements,
             showTotal: total => `总记录数 ${total} `,
-            onChange: (number, size) => (dispatch({ type: 'REAPRB0003/query', page: number - 1, size })),
+            onChange: (number, size) => (dispatch({ type: 'Role/query', page: number - 1, size })),
         }}
           columns={columns}
           rowKey="id"

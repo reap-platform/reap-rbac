@@ -12,10 +12,10 @@ export default ({
       <Row>
         <Row gutter={24}>
           <Col span={6}>
-            <OrgTree orgs={orgs} dispatch={dispatch} loading={effects['REAPRB0001/orgTree']} />
+            <OrgTree orgs={orgs} dispatch={dispatch} loading={effects['Org/orgTree']} />
           </Col>
           <Col span={18}>
-            <OrgList page={page} dispatch={dispatch} selected={selected} search={search} showCreateModal={showCreateModal} loading={effects['REAPRB0001/query']} />
+            <OrgList page={page} dispatch={dispatch} selected={selected} search={search} showCreateModal={showCreateModal} loading={effects['Org/query']} />
           </Col>
         </Row>
       </Row>

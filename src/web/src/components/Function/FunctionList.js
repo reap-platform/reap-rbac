@@ -20,7 +20,7 @@ const Component = ({
     return (value) => {
       const update = page.content.find(o => o.id === key)
       update[dataIndex] = value
-      dispatch({ type: 'REAPRB0004/update', func: update })
+      dispatch({ type: 'Function/update', func: update })
     }
   }
   const columns = [
@@ -98,7 +98,7 @@ const Component = ({
         return (
           page && page.content && page.content.length > 0 ?
             (
-              <Popconfirm title="确认删除?" onConfirm={() => dispatch({ type: 'REAPRB0004/delete', id: record.id })}>
+              <Popconfirm title="确认删除?" onConfirm={() => dispatch({ type: 'Function/delete', id: record.id })}>
                 <a href="#">删除</a>
               </Popconfirm>
             ) : null
@@ -116,7 +116,7 @@ const Component = ({
               onChange={(e) => {
                 const { value } = e.target
                 dispatch({
-                  type: 'REAPRB0004/setState',
+                  type: 'Function/setState',
                   search: {
                     serviceId: value || null,
                   },
@@ -131,7 +131,7 @@ const Component = ({
               onChange={(e) => {
                 const { value } = e.target
                 dispatch({
-                  type: 'REAPRB0004/setState',
+                  type: 'Function/setState',
                   search: {
                     name: value || null,
                   },
@@ -146,7 +146,7 @@ const Component = ({
               onChange={(e) => {
                 const { value } = e.target
                 dispatch({
-                  type: 'REAPRB0004/setState',
+                  type: 'Function/setState',
                   search: {
                     code: value || null,
                   },
@@ -162,7 +162,7 @@ const Component = ({
               htmlType="button"
               icon="search"
               onClick={
-                () => dispatch({ type: 'REAPRB0004/query' })
+                () => dispatch({ type: 'Function/query' })
               }
             >
             查询
@@ -178,7 +178,7 @@ const Component = ({
           pagination={{
             total: page && page.totalElements,
             showTotal: total => `总记录数 ${total} `,
-            onChange: (number, size) => (dispatch({ type: 'REAPRB0004/query', page: number - 1, size })),
+            onChange: (number, size) => (dispatch({ type: 'Function/query', page: number - 1, size })),
         }}
           rowKey="id"
           columns={columns}

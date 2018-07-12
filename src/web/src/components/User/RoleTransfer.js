@@ -6,23 +6,23 @@ export default ({
 }) => {
   const handleChange = (nextTargetKeys) => {
     dispatch({
-      type: 'REAPRB0002/setState',
+      type: 'User/setState',
       user: { ...user, roles: roles.filter(r => nextTargetKeys.includes(r.id)) },
     })
   }
 
   const handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
-    dispatch({ type: 'REAPRB0002/setState', selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] })
+    dispatch({ type: 'User/setState', selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] })
   }
 
   return (
     <Modal title="分配角色"
       visible={showTransferModal}
       onOk={() => {
-        dispatch({ type: 'REAPRB0002/allocateRole' })
+        dispatch({ type: 'User/allocateRole' })
   }}
       onCancel={() => {
-    dispatch({ type: 'REAPRB0002/resetRoleState' })
+    dispatch({ type: 'User/resetRoleState' })
   }}
     >
       <Transfer

@@ -27,7 +27,7 @@ export default {
   },
   effects: {
     * query ({ page = DEFAULT_PAGE_NUMBER, size = DEFAULT_PAGE_SIZE }, { call, put, select }) {
-      const state = yield select(({ REAPRB0004 }) => (REAPRB0004))
+      const state = yield select(({ Function }) => (Function))
       const params = {
         size, page, ...state.search,
       }
@@ -37,7 +37,7 @@ export default {
       }
     },
     * update ({ func }, { call, put, select }) {
-      const state = yield select(({ REAPRB0004 }) => (REAPRB0004))
+      const state = yield select(({ Function }) => (Function))
       const result = yield call(update, func)
       if (result.success) {
         yield put({
@@ -50,14 +50,14 @@ export default {
     * delete ({ id }, { call, put, select }) {
       const result = yield call(remove, id)
       if (result.success) {
-        const state = yield select(({ REAPRB0004 }) => (REAPRB0004))
+        const state = yield select(({ Function }) => (Function))
         yield put({ type: 'query', ...functionSpec(state) })
       } else {
         error(result)
       }
     },
     * create ({ func, form }, { call, select, put }) {
-      const state = yield select(({ REAPRB0004 }) => (REAPRB0004))
+      const state = yield select(({ Function }) => (Function))
       const result = yield call(create, func)
       if (result.success) {
         form.resetFields()
@@ -77,9 +77,9 @@ export default {
     },
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
+    setup ({ context, dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/REAPRB0004') {
+        if (location.pathname === `/${context.code}`) {
           dispatch({ type: 'query', page: DEFAULT_PAGE_NUMBER, size: DEFAULT_PAGE_SIZE })
         }
       })

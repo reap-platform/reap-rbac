@@ -21,7 +21,7 @@ export default ({
             selected={selected}
             search={search}
             showCreateModal={showCreateModal}
-            loading={effects['REAPRB0002/query']}
+            loading={effects['User/query']}
           />
         </Card>
       </Row>

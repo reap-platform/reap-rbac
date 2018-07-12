@@ -5,6 +5,7 @@ const { TreeNode } = Tree
 
 const Component = ({
   orgs, dispatch, loading,
+
 }) => {
   const loop = data => data.map(org => ({
     key: org.id, title: org.name, isLeaf: org.leaf, childrens: org.childs,
@@ -27,13 +28,11 @@ const Component = ({
               defaultExpandedKeys={['root']}
               showIcon
               showLine
-              onSelect={(selectedKeys, { selected, selectedNodes }) => {
-                      dispatch({ type: 'REAPRB0001/select', selected: selected ? selectedNodes[0].props.data : null })
-                    }}
+              onSelect={(selectedKeys, { selected, selectedNodes }) => dispatch({ type: 'Org/select', selected: selected ? selectedNodes[0].props.data : null })}
             >
               <TreeNode
                 key="root"
-                onSelect={() => dispatch({ type: 'REAPRB0001/select', selected: null })}
+                onSelect={() => dispatch({ type: 'Org/select', selected: null })}
                 icon={<Icon type="home" />}
                 title=""
               >
