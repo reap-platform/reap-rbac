@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Card } from 'antd'
-import FunctionList from '../components/REAPRB0004/FunctionList'
-import styles from './REAPRB0004.less'
+import FunctionList from '../components/Function/FunctionList'
+import styles from './Function.less'
 
 export default ({
   page, dispatch, effects, showCreateModal,

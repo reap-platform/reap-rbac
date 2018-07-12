@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Card } from 'antd'
-import RoleList from '../components/REAPRB0003/RoleList'
-import styles from './REAPRB0003.less'
+import RoleList from '../components/Role/RoleList'
+import styles from './Role.less'
 
 export default ({
   page, dispatch, effects, showCreateModal, showTransferModal, role, functions, selectedKeys,

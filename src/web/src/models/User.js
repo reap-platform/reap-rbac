@@ -1,7 +1,7 @@
 import feedback from '../utils/feedback'
-import { create, update, query, get, remove } from '../apis/user'
-import { queryAll, allocateRoles } from '../apis/role'
-import { orgsTree } from '../apis/org'
+import { create, update, query, get, remove } from '../apis/User'
+import { queryAll, allocateRoles } from '../apis/Role'
+import { orgsTree } from '../apis/Org'
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '../constants'
 
 const { notification: { error } } = feedback

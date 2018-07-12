@@ -31,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mybatis.annotations.Statement;
 import org.springframework.data.mybatis.annotations.Statement.Type;
 import org.springframework.data.mybatis.repository.support.MybatisRepository;
+import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends MybatisRepository<User, String> {
 
@@ -43,5 +44,5 @@ public interface UserRepository extends MybatisRepository<User, String> {
 	Page<User> findByOrgId(String orgId, Pageable pageable);
 
 	@Statement(type= Type.PAGE)
-	Page<User> findBySpecification(QueryUserSpec queryUserSpec, Pageable pageable);
+	Page<User> findBySpecification(@Param("queryUserSpec") QueryUserSpec queryUserSpec, Pageable pageable);
 }

@@ -1,0 +1,8 @@
+[
+  { "code": "REAPRB0001", "name": "Org" ,"description": "机构信息维护" },
+  { "code": "REAPRB0002","name": "User", "description": "用户信息维护" },
+  { "code": "REAPRB0003","name": "Role" ,"description": "角色维护" },
+  { "code": "REAPRB0004","name": "Function","description": "功能码维护" }
+]
+
+

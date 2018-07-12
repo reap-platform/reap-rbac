@@ -1,6 +1,7 @@
 {
-  "name": "reap-rbac-ui",
+  "name": "reap-rbac",
   "version": "0.0.1-SNAPSHOT",
+  "groupId": "org.reap.rbac",
   "description": "REAP Role Base Access Control Services",
   "private": false,
   "license": "MIT",

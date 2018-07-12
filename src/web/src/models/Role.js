@@ -1,6 +1,6 @@
 import feedback from '../utils/feedback'
-import { create, update, query, remove, findFunctions } from '../apis/role'
-import { queryAll, allocateFunctions } from '../apis/function'
+import { create, update, query, remove, findFunctions } from '../apis/Role'
+import { queryAll, allocateFunctions } from '../apis/Function'
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '../constants'
 
 const { notification: { error } } = feedback

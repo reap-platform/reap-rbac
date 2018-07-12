@@ -1,8 +1,8 @@
 import React from 'react'
 import { Row, Col } from 'antd'
-import OrgTree from '../components/REAPRB0001/OrgTree'
-import OrgList from '../components/REAPRB0001/OrgList'
-import styles from './REAPRB0001.less'
+import OrgTree from '../components/Org/OrgTree'
+import OrgList from '../components/Org/OrgList'
+import styles from './Org.less'
 
 export default ({
   page, orgs, dispatch, selected, search, effects, showCreateModal,

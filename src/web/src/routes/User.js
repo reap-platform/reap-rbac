@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Card } from 'antd'
-import UserList from '../components/REAPRB0002/UserList'
-import styles from './REAPRB0002.less'
+import UserList from '../components/User/UserList'
+import styles from './User.less'
 
 export default ({
   page, orgs, dispatch, selected, search, effects, showCreateModal, user, selectedKeys, roles, showTransferModal,

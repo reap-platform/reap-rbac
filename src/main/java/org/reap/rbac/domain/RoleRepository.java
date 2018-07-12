@@ -27,9 +27,10 @@ import java.util.List;
 
 import org.springframework.data.mybatis.annotations.Statement;
 import org.springframework.data.mybatis.repository.support.MybatisRepository;
+import org.springframework.data.repository.query.Param;
 
 public interface RoleRepository extends MybatisRepository<Role, String> {
 
 	@Statement
-	List<Role> findByUserId(String userId);
+	List<Role> findByUserId(@Param("userId") String userId);
 }

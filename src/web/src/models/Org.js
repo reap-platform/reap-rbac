@@ -1,4 +1,4 @@
-import { orgsTree, remove, query, create, update } from '../apis/org'
+import { orgsTree, remove, query, create, update } from '../apis/Org'
 import feedback from '../utils/feedback'
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '../constants'
 
