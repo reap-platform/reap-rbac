@@ -25,7 +25,11 @@ package org.reap.rbac.domain;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mybatis.annotations.Statement;
 import org.springframework.data.mybatis.repository.support.MybatisRepository;
+import org.springframework.data.repository.query.Param;
 
 public interface OrgRepository extends MybatisRepository<Org, String> {
 
@@ -33,6 +37,9 @@ public interface OrgRepository extends MybatisRepository<Org, String> {
 
 	List<Org> findByParentId(String parentId);
 
+	@Statement
+	Page<Org> findOrgTree(@Param("specification") Org specification, Pageable pageable);
+	
 	boolean existsByCode(String code);
 
 	boolean existsByName(String name);

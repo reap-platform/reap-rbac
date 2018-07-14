@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 import org.reap.rbac.common.Constants;
 import org.reap.rbac.common.ErrorCodes;
-import org.reap.rbac.common.Fields;
 import org.reap.rbac.domain.Org;
 import org.reap.rbac.domain.OrgRepository;
 import org.reap.rbac.domain.User;
@@ -39,12 +38,8 @@ import org.reap.support.Result;
 import org.reap.util.Assert;
 import org.reap.util.FunctionalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -216,6 +211,7 @@ public class OrgController {
 	 * @apiParam (QueryString) {Number} [size=10] 每页记录数
 	 * @apiParam (QueryString) {String} [code] 机构代码
 	 * @apiParam (QueryString) {String} [name] 机构名称
+	 * @apiParam (QueryString) {String} [parentId] 查询归属于指定机构下的机构清单
 	 * @apiSuccess (Success) {Boolean} success 成功标识 <code>true</code>
 	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
 	 * @apiSuccess (Success) {Object} payload 响应数据
@@ -234,11 +230,7 @@ public class OrgController {
 	@RequestMapping(path = "/orgs", method = RequestMethod.GET)
 	public Result<Page<Org>> find(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) int size, Org spec) {
-		Example<Org> example = Example.of(spec,
-				ExampleMatcher.matching().withIgnoreNullValues().withIgnoreCase().withStringMatcher(
-						StringMatcher.CONTAINING));
-		return Result.newResult(
-				orgRepository.findAll(example, PageRequest.of(page, size, Sort.by(Fields.CODE))));
+		return Result.newResult(orgRepository.findOrgTree(spec, PageRequest.of(page, size)));
 	}
 
 	/**
@@ -302,8 +294,7 @@ public class OrgController {
 	 */
 	@RequestMapping(path = "/org/{id}", method = RequestMethod.GET)
 	public Result<Org> findOne(@PathVariable String id) {
-		return Result.newResult(
-				FunctionalUtils.orElseThrow(orgRepository.findById(id), ErrorCodes.ORG_NOT_EXIST));
+		return Result.newResult(FunctionalUtils.orElseThrow(orgRepository.findById(id), ErrorCodes.ORG_NOT_EXIST));
 	}
 
 	private void validate(Org org) {

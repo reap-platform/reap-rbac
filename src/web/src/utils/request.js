@@ -47,7 +47,7 @@ export default function request (url, options) {
     // Object.assign(configurations, require('../mock/devConfig'))
   }
   const defaultOptions = {
-    headers : {
+    headers: {
       token: session.getSession() && session.getSession().token,
     },
   }
@@ -79,7 +79,10 @@ export default function request (url, options) {
     .then((response) => {
       return response.json()
     })
-    .catch(() => {
+    .catch((e) => {
+      if (e.response) {
+        return e.response.json()
+      }
       return {
         status: STATUS_FAIL,
         success: false,

@@ -55,7 +55,7 @@
 				</root>
 			</then>
 			<else>
-				<root level="DEBUG">
+				<root level="INFO">
 					<appender-ref ref="FILE" />
 				</root>
 			</else>

@@ -32,6 +32,8 @@ export default {
       const result = yield call(orgsTree)
       if (result.success) {
         yield put({ type: 'setState', orgs: result.payload })
+      } else {
+        error(result)
       }
     },
     * query ({ page = DEFAULT_PAGE_NUMBER, size = DEFAULT_PAGE_SIZE, parentOrgId }, { call, put, select }) {
@@ -42,6 +44,8 @@ export default {
       const result = yield call(query, params)
       if (result.success) {
         yield put({ type: 'setState', page: result.payload })
+      } else {
+        error(result)
       }
     },
     * update ({ org }, { call, put, select }) {
