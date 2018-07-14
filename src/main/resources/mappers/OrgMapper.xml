@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.reap.rbac.domain.Org">
+
+	<select id="findOrgTree" resultMap="ResultMap" lang="XML">
+		<if test="specification != null and specification.parentId != null">
+		  <bind name="tmp" value="'tmp'+@java.util.UUID@randomUUID().toString().replace('-','_')" />
+		   with ${tmp} (id, name, code, create_time,parent_id, remark) as (
+			 select id, name, code, create_time,parent_id,remark from org where id = #{specification.parentId}
+			 union all 
+			 select o.id, o.name, o.code, o.create_time, o.parent_id, o.remark  from org o  inner join  ${tmp}  where o.parent_id = ${tmp}.id  
+		   )
+		   select id, name, code, create_time,parent_id, remark from ${tmp} "org"
+		</if>
+		
+		<if test="specification == null or specification.parentId == null">
+		select "org".id as "id","org".name as "name","org".code as "code","org".create_time as "createTime","org".parent_id as "parentId","org".remark as "remark","org".leaf as "leaf" from org "org"   
+		</if>
+		
+		<if test="specification != null">
+			<trim prefix=" where " prefixOverrides="and |or ">
+				<if test="specification.name != null"> and "org".name like concat('%',concat(upper(#{specification.name}),'%'))</if>
+				<if test="specification.code != null"> and "org".code like concat('%',concat(upper(#{specification.code}),'%'))</if>
+				<if test="specification.remark != null" > and "org".remark like concat('%',concat(upper(#{specification.remark}),'%'))</if>
+			</trim>
+		</if>
+	</select>
+	
+	<select id="count_findOrgTree" resultType="java.lang.Long" lang="XML">
+	select count(*) from (
+		<if test="specification != null and specification.parentId != null">
+		  <bind name="tmp" value="'tmp'+@java.util.UUID@randomUUID().toString().replace('-','_')" />
+		   with ${tmp} (id, name, code, create_time,parent_id, remark) as (
+			 select id, name, code, create_time,parent_id, remark from org where id = #{specification.parentId}
+			 union all 
+			 select o.id, o.name, o.code, o.create_time, o.parent_id, o.remark from org o ,${tmp} where ${tmp}.id = o.parent_id 
+		   )
+		   select id, name, code, create_time,parent_id, remark from ${tmp} "org"
+		</if>
+		
+		<if test="specification == null or specification.parentId == null">
+		select "org".id as "id","org".name as "name","org".code as "code","org".create_time as "createTime","org".parent_id as "parentId","org".remark as "remark","org".leaf as "leaf" from org "org"   
+		</if>
+		<if test="specification != null">
+			<trim prefix=" where " prefixOverrides="and |or ">
+				<if test="specification.name != null" > and "org".name like concat('%',concat(upper(#{specification.name}),'%'))</if>
+				<if test="specification.code != null" > and "org".code like concat('%',concat(upper(#{specification.code}),'%'))</if>
+				<if test="specification.remark != null" > and "org".remark like concat('%',concat(upper(#{specification.remark}),'%'))</if>
+			</trim>
+		</if>
+			) as "org"
+	</select>
+</mapper>
