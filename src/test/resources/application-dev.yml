@@ -4,7 +4,7 @@ server:
     
 spring:
   datasource: 
-    url: "jdbc:h2:mem:REAP;MVCC=true;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM './database/ddl.sql'\\;RUNSCRIPT FROM 'classpath:scripts/init-test.sql';DB_CLOSE_ON_EXIT=FALSE"
+    url: "jdbc:h2:mem:REAP;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM './database/ddl.sql'\\;RUNSCRIPT FROM 'classpath:scripts/init-test.sql';DB_CLOSE_ON_EXIT=FALSE"
     username:
     password:
     driver-class-name: org.h2.Driver
