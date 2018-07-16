@@ -11,8 +11,23 @@
 			"function".type as "type",
 			"function".action as "action",
 			"function".remark as "remark" 
-	    from function "function"  left join role_function  "role_function" on "function".id  = "role_function".function_id
+	    from REAP_RBAC.function "function"  left join REAP_RBAC.role_function  "role_function" on "function".id  = "role_function".function_id
 
 		where "role_function".role_id = #{roleId}
+	</select>
+	
+	
+	<select id="findByBusinessTypeId" resultMap="ResultMap" lang="XML">
+		select 
+			"function".id as "id",
+			"function".service_id as "serviceId",
+			"function".code as "code",
+			"function".name as "name",
+			"function".type as "type",
+			"function".action as "action",
+			"function".remark as "remark" 
+	    from REAP_RBAC.function "function"  left join REAP_RBAC.business_type_function  "business_type_function" on "function".id  = "business_type_function".function_id
+
+		where "business_type_function".business_type_id = #{businessTypeId}
 	</select>
 </mapper>

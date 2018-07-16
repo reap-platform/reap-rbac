@@ -108,8 +108,8 @@ export default {
       return {
         ...state,
         showTransferModal: false,
-        roles: [],
-        user: {},
+        functions: [],
+        role: {},
         selectedKeys: [],
       }
     },

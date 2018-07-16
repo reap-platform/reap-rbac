@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.reap.rbac.common.Constants;
 import org.reap.rbac.common.ErrorCodes;
 import org.reap.rbac.common.Fields;
+import org.reap.rbac.domain.BusinessTypeFunction;
+import org.reap.rbac.domain.BusinessTypeFunctionRepository;
 import org.reap.rbac.domain.Function;
 import org.reap.rbac.domain.FunctionRepository;
 import org.reap.rbac.domain.RoleFunction;
@@ -37,6 +39,10 @@ public class FunctionController {
 
 	@Autowired
 	private RoleFunctionRepository roleFunctionRepository;
+	
+	@Autowired
+	private BusinessTypeFunctionRepository businessTypeFunctionRepository;
+	
 
 	/** @apiDefine Function 功能维护 */
 
@@ -63,6 +69,18 @@ public class FunctionController {
 		return Result.newResult();
 	}
 
+	
+	@RequestMapping(path = "/function/businessType/{id}", method = RequestMethod.POST)
+	@Transactional
+	public Result<?> allocateBusinessTypeFunctions(@PathVariable String id, @RequestBody String[] functionIds) {
+		businessTypeFunctionRepository.deleteById_BusinessTypeId(id);
+		businessTypeFunctionRepository.insertAll(
+				Arrays.asList(functionIds).stream().map(functionId -> BusinessTypeFunction.of(id, functionId)).collect(
+						Collectors.toList()));
+		return Result.newResult();
+	}
+
+	
 	/**
 	 * @api {get} /functions/all 所有功能
 	 * @apiName functionsAll

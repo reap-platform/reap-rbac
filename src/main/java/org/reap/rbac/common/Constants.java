@@ -31,6 +31,8 @@ package org.reap.rbac.common;
  */
 public final class Constants {
 
+	public static final String RBAC_SCHEMA = "REAP_RBAC";
+
 	public static final String DEFAULT_PAGE_SIZE = "10";
 
 	public static final String DEFAULT_PAGE_NUMBER = "0";

@@ -37,8 +37,8 @@ import org.reap.rbac.common.Constants;
  * @since 1.0
  */
 @Entity
-@Table(schema= Constants.RBAC_SCHEMA)
-public class RoleFunction {
+@Table(schema = Constants.RBAC_SCHEMA)
+public class BusinessTypeFunction {
 
 	@EmbeddedId
 	private ID id;
@@ -51,10 +51,10 @@ public class RoleFunction {
 		this.id = id;
 	}
 
-	public static final RoleFunction of(String roleId, String functionId) {
-		RoleFunction roleFunction = new RoleFunction();
-		ID  id = new ID();
-		id.setRoleId(roleId);
+	public static final BusinessTypeFunction of(String businessTypeId, String functionId) {
+		BusinessTypeFunction roleFunction = new BusinessTypeFunction();
+		ID id = new ID();
+		id.setBusinessTypeId(businessTypeId);
 		id.setFunctionId(functionId);
 		roleFunction.setId(id);
 		return roleFunction;
@@ -62,16 +62,16 @@ public class RoleFunction {
 
 	public static class ID implements Serializable {
 
-		private String roleId;
+		private String businessTypeId;
 
 		private String functionId;
 
-		public String getRoleId() {
-			return roleId;
+		public String getBusinessTypeId() {
+			return businessTypeId;
 		}
 
-		public void setRoleId(String roleId) {
-			this.roleId = roleId;
+		public void setBusinessTypeId(String businessTypeId) {
+			this.businessTypeId = businessTypeId;
 		}
 
 		public String getFunctionId() {

@@ -32,8 +32,10 @@ import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.reap.rbac.common.Constants;
 import org.springframework.data.annotation.CreatedDate;
 
 /**
@@ -43,6 +45,7 @@ import org.springframework.data.annotation.CreatedDate;
  *
  */
 @Entity
+@Table(schema = Constants.RBAC_SCHEMA)
 public class Org {
 
 	@Id
@@ -52,6 +55,8 @@ public class Org {
 	private String name;
 
 	private String code;
+
+	private String businessTypeId;
 
 	@CreatedDate
 	private Date createTime;
@@ -131,6 +136,14 @@ public class Org {
 
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
+	}
+
+	public String getBusinessTypeId() {
+		return businessTypeId;
+	}
+
+	public void setBusinessTypeId(String businessTypeId) {
+		this.businessTypeId = businessTypeId;
 	}
 
 }

@@ -5,16 +5,16 @@
 	<select id="findOrgTree" resultMap="ResultMap" lang="XML">
 		<if test="specification != null and specification.parentId != null">
 		  <bind name="tmp" value="'tmp'+@java.util.UUID@randomUUID().toString().replace('-','_')" />
-		   with ${tmp} (id, name, code, create_time,parent_id, remark) as (
-			 select id, name, code, create_time,parent_id,remark from org where id = #{specification.parentId}
+		   with ${tmp} (id,business_type_id, name, code, create_time,parent_id, remark) as (
+			 select id,business_type_id, name, code, create_time,parent_id,remark from REAP_RBAC.org where id = #{specification.parentId}
 			 union all 
-			 select o.id, o.name, o.code, o.create_time, o.parent_id, o.remark  from org o ,  ${tmp}  where o.parent_id = ${tmp}.id  
+			 select o.id,o.business_type_id, o.name, o.code, o.create_time, o.parent_id, o.remark  from REAP_RBAC.org o ,  ${tmp}  where o.parent_id = ${tmp}.id  
 		   )
-		   select id, name, code, create_time,parent_id, remark from ${tmp} "org"
+		   select id,business_type_id as "businessTypeId", name, code, create_time as "createTime",parent_id as "parentId", remark from ${tmp} "org"
 		</if>
 		
 		<if test="specification == null or specification.parentId == null">
-		select "org".id as "id","org".name as "name","org".code as "code","org".create_time as "createTime","org".parent_id as "parentId","org".remark as "remark","org".leaf as "leaf" from org "org"   
+		select "org".id as "id","org".business_type_id as "businessTypeId" ,"org".name as "name","org".code as "code","org".create_time as "createTime","org".parent_id as "parentId","org".remark as "remark","org".leaf as "leaf" from REAP_RBAC.org "org"   
 		</if>
 		
 		<if test="specification != null">
@@ -31,15 +31,15 @@
 		<if test="specification != null and specification.parentId != null">
 		  <bind name="tmp" value="'tmp'+@java.util.UUID@randomUUID().toString().replace('-','_')" />
 		   with ${tmp} (id, name, code, create_time,parent_id, remark) as (
-			 select id, name, code, create_time,parent_id,remark from org where id = #{specification.parentId}
+			 select id, name, code, create_time,parent_id,remark from REAP_RBAC.org where id = #{specification.parentId}
 			 union all 
-			 select o.id, o.name, o.code, o.create_time, o.parent_id, o.remark  from org o , ${tmp}  where o.parent_id = ${tmp}.id  
+			 select o.id, o.name, o.code, o.create_time, o.parent_id, o.remark  from REAP_RBAC.org o , ${tmp}  where o.parent_id = ${tmp}.id  
 		   )
 		    select count(*) from ${tmp} "org"
 		</if>
 		
 		<if test="specification == null or specification.parentId == null">
-		select count(*) from org "org"   
+		select count(*) from REAP_RBAC.org "org"   
 		</if>
 		
 		<if test="specification != null">

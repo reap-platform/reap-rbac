@@ -5,6 +5,11 @@ export function allocateFunctions (roleId, functionIds) {
   return request(`/apis/reap-rbac/function/role/${roleId}`, { method: 'POST', body: functionIds })
 }
 
+export function allocateBusinessTypeFunctions (businessTypeId, functionIds) {
+  return request(`/apis/reap-rbac/function/businessType/${businessTypeId}`, { method: 'POST', body: functionIds })
+}
+
+
 export function queryAll () {
   return request('/apis/reap-rbac/functions/all', { method: 'GET' })
 }

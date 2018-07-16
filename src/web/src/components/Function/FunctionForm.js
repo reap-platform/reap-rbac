@@ -18,7 +18,6 @@ const Component = ({
 }) => {
   const { getFieldDecorator } = form
 
-
   return (
     <div>
       <Button type="primary"
@@ -50,6 +49,7 @@ const Component = ({
             }],
           })(<Input />)}
           </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="名称"

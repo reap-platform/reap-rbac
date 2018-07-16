@@ -14,7 +14,7 @@ const formItemLayout = {
 }
 
 const Component = ({
-  page, dispatch, showCreateModal, selected, loading,
+  businessTypes, page, dispatch, showCreateModal, selected, loading,
 }) => {
   const { Item } = Form
   const onCellChange = (key, dataIndex) => {
@@ -28,7 +28,7 @@ const Component = ({
     {
       title: '机构代码',
       dataIndex: 'code',
-      width: '15%',
+      width: '10%',
       key: 'code',
       render: (text, record) => (
         <EditableCell
@@ -38,9 +38,22 @@ const Component = ({
       ),
     },
     {
+      title: '归属行业',
+      dataIndex: 'businessTypeId',
+      width: '10%',
+      key: 'businessTypeId',
+      render: (text) => {
+        const businessType = businessTypes.find(bizTyp => bizTyp.id === text)
+        if (businessType) {
+          return businessType.name
+        }
+        return text
+      },
+    },
+    {
       title: '机构名称',
       dataIndex: 'name',
-      width: '30%',
+      width: '20%',
       key: 'name',
       render: (text, record) => (
         <EditableCell
@@ -138,7 +151,7 @@ const Component = ({
       </Row>
 
       <Col span={22}>
-        <OrgForm showCreateModal={showCreateModal} selected={selected} dispatch={dispatch} />
+        <OrgForm businessTypes={businessTypes} showCreateModal={showCreateModal} selected={selected} dispatch={dispatch} />
       </Col>
       <Col span={22}>
         <Table dataSource={page && page.content}

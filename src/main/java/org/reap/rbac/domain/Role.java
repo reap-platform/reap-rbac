@@ -30,8 +30,10 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.reap.rbac.common.Constants;
 import org.springframework.data.annotation.CreatedDate;
 
 /**
@@ -41,6 +43,7 @@ import org.springframework.data.annotation.CreatedDate;
  *
  */
 @Entity
+@Table(schema= Constants.RBAC_SCHEMA)
 public class Role {
 
 	@Id

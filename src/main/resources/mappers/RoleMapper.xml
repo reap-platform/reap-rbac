@@ -9,8 +9,8 @@
 			"role".create_time as "createTime",
 			"role".name as "name",
 			"role".remark as "remark"
-			from role "role"  
-		    left join user_role  "user_role"  on  "role".id = "user_role".role_id
+			from REAP_RBAC.role "role"  
+		    left join REAP_RBAC.user_role  "user_role"  on  "role".id = "user_role".role_id
 		    
 		    where  "user_role".user_id = #{userId}  
     </select>

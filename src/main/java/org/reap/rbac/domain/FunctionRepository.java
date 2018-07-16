@@ -15,4 +15,7 @@ public interface FunctionRepository extends MybatisRepository<Function, String> 
 
 	@Statement
 	List<Function> findByRoleId(@Param("roleId") String roleId);
+	
+	@Statement
+	List<Function> findByBusinessTypeId(@Param("businessTypeId") String businessTypeId);
 }

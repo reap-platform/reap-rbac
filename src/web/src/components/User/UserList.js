@@ -229,6 +229,9 @@ const Component = ({
           pagination={{
             total: page && page.totalElements,
             showTotal: total => `总记录数 ${total} `,
+            showSizeChanger: true,
+        showQuickJumper: true,
+        onShowSizeChange: (number, size) => (dispatch({ type: 'User/query', page: number - 1, size })),
             onChange: (number, size) => (dispatch({
               type: 'User/query', page: number - 1, size, parentOrgId: selected && selected.key,
              })),

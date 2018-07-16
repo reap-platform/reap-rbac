@@ -4,16 +4,21 @@ package org.reap.rbac.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.reap.rbac.common.Constants;
 
 @Entity
+@Table(schema= Constants.RBAC_SCHEMA)
 public class Function {
 
+	
 	@Id
 	@GeneratedValue
 	private String id;
 
 	private String serviceId;
-
+	
 	private String code;
 
 	private String name;

@@ -23,63 +23,12 @@
 
 package org.reap.rbac.domain;
 
-import java.io.Serializable;
+import org.reap.rbac.domain.BusinessTypeFunction.ID;
+import org.springframework.data.mybatis.repository.support.MybatisRepository;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+public interface BusinessTypeFunctionRepository extends MybatisRepository<BusinessTypeFunction, ID> {
 
-import org.reap.rbac.common.Constants;
-
-/**
- * 
- * @author 7cat
- * @since 1.0
- */
-@Entity
-@Table(schema= Constants.RBAC_SCHEMA)
-public class RoleFunction {
-
-	@EmbeddedId
-	private ID id;
-
-	public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
-	}
-
-	public static final RoleFunction of(String roleId, String functionId) {
-		RoleFunction roleFunction = new RoleFunction();
-		ID  id = new ID();
-		id.setRoleId(roleId);
-		id.setFunctionId(functionId);
-		roleFunction.setId(id);
-		return roleFunction;
-	}
-
-	public static class ID implements Serializable {
-
-		private String roleId;
-
-		private String functionId;
-
-		public String getRoleId() {
-			return roleId;
-		}
-
-		public void setRoleId(String roleId) {
-			this.roleId = roleId;
-		}
-
-		public String getFunctionId() {
-			return functionId;
-		}
-
-		public void setFunctionId(String functionId) {
-			this.functionId = functionId;
-		}
-	}
+	void deleteById_BusinessTypeId(String businessTypeId);
+	
+	void deleteById_FunctionId(String functionId);
 }

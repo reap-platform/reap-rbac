@@ -1,5 +1,6 @@
 import { orgsTree, remove, query, create, update } from '../apis/Org'
 import feedback from '../utils/feedback'
+import { getAll } from '../apis/BusinessType'
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '../constants'
 
 const { notification: { error } } = feedback
@@ -26,6 +27,7 @@ export default {
       size: DEFAULT_PAGE_SIZE,
       number: DEFAULT_PAGE_NUMBER,
     },
+    businessTypes: [],
   },
   effects: {
     * orgTree (action, { call, put }) {
@@ -34,6 +36,12 @@ export default {
         yield put({ type: 'setState', orgs: result.payload })
       } else {
         error(result)
+      }
+    },
+    * initBusinessTypes (action, { call, put }) {
+      const result = yield call(getAll)
+      if (result.success) {
+        yield put({ type: 'setState', businessTypes: result.payload })
       }
     },
     * query ({ page = DEFAULT_PAGE_NUMBER, size = DEFAULT_PAGE_SIZE, parentOrgId }, { call, put, select }) {
@@ -107,6 +115,7 @@ export default {
         if (location.pathname === `/${context.code}`) {
           dispatch({ type: 'orgTree' })
           dispatch({ type: 'query', page: DEFAULT_PAGE_NUMBER, size: DEFAULT_PAGE_SIZE })
+          dispatch({ type: 'initBusinessTypes' })
         }
       })
     },

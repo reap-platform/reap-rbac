@@ -30,8 +30,10 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.reap.rbac.common.Constants;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,6 +45,7 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
  * @author 7cat
  */
 @Entity
+@Table(schema= Constants.RBAC_SCHEMA)
 public class User {
 
 	public static final String GENDER_MALE = "M";

@@ -1,7 +1,9 @@
 import React from 'react'
-import { Form, Input, Modal, Button } from 'antd'
+import { Form, Input, Modal, Button, Select } from 'antd'
 
 const FormItem = Form.Item
+
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -13,10 +15,9 @@ const formItemLayout = {
 }
 
 const Component = ({
-  form, selected, dispatch, showCreateModal,
+  businessTypes, form, selected, dispatch, showCreateModal,
 }) => {
   const { getFieldDecorator } = form
-
 
   return (
     <div>
@@ -59,6 +60,14 @@ const Component = ({
               required: true, message: '请输入机构代码',
             }],
           })(<Input />)}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="业务类型"
+          >
+            {getFieldDecorator('businessTypeId', { rules: [{ message: '请选择业务类型' }] })(<Select style={{ width: 120 }}>
+              {businessTypes.map(businessType => <Option key={businessType.id} value={businessType.code}>{businessType.name}</Option>)}
+            </Select>)}
           </FormItem>
           <FormItem
             {...formItemLayout}

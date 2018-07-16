@@ -68,4 +68,6 @@ public final class ErrorCodes {
 	/** 功能名重复. */
 	public static final String DUPLICATED_FUNC_NAME = "REAPRB0111";
 
+	/** 业务类型重复. */
+	public static final String DUPLICATED_BUSINESS_TYPE = "REAPRB0112";
 }

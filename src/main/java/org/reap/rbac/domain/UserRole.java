@@ -27,6 +27,9 @@ import java.io.Serializable;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.reap.rbac.common.Constants;
 
 /**
  * 
@@ -34,6 +37,7 @@ import javax.persistence.Entity;
  * @since 1.0
  */
 @Entity
+@Table(schema= Constants.RBAC_SCHEMA)
 public class UserRole {
 
 	@EmbeddedId

@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,6 +92,9 @@ public class OrgController {
 		parent.setLeaf(Constants.LEAF_FLAG_N);
 		orgRepository.save(parent);
 		org.setParentId(id);
+		if(StringUtils.isEmpty(org.getBusinessTypeId())) {
+			org.setBusinessTypeId(parent.getBusinessTypeId());
+		}
 		return Result.newResult(orgRepository.save(org));
 	}
 

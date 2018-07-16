@@ -5,7 +5,7 @@ import OrgList from '../components/Org/OrgList'
 import styles from './Org.less'
 
 export default ({
-  page, orgs, dispatch, selected, search, effects, showCreateModal,
+  page, orgs, dispatch, selected, search, effects, showCreateModal, businessTypes,
 }) => {
   return (
     <div className={styles.orgContainer}>
@@ -15,7 +15,7 @@ export default ({
             <OrgTree orgs={orgs} dispatch={dispatch} loading={effects['Org/orgTree']} />
           </Col>
           <Col span={18}>
-            <OrgList page={page} dispatch={dispatch} selected={selected} search={search} showCreateModal={showCreateModal} loading={effects['Org/query']} />
+            <OrgList businessTypes={businessTypes} page={page} dispatch={dispatch} selected={selected} search={search} showCreateModal={showCreateModal} loading={effects['Org/query']} />
           </Col>
         </Row>
       </Row>
