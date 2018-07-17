@@ -13,8 +13,16 @@
 			"user".phone_no as "phoneNo",
 			"user".create_time as "createTime",
 			"user".gender as "gender",
-			"user".remark as "remark" 
-			from REAP_RBAC.user "user"
+			"user".remark as "remark", 
+			"org".id  as "org.id",
+			"org".name  as "org.name",
+			"org".business_type_id  as "org.businessTypeId",
+			"org".create_time  as "org.createTime",
+			"org".parent_id  as "org.parentId",
+			"org".remark  as "org.remark",
+			"org".leaf  as "org.leaf"
+			from REAP_RBAC.user "user" left join REAP_RBAC.org  "org"   on "user".org_id = "org".id
+			
 		  <trim prefix="where" prefixOverrides="and |or "> 
 		      <if test="queryUserSpec!=null and  queryUserSpec.username != null">
 		        and "user".username like '%${queryUserSpec.username}%'

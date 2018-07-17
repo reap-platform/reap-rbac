@@ -92,7 +92,7 @@ public class OrgController {
 		parent.setLeaf(Constants.LEAF_FLAG_N);
 		orgRepository.save(parent);
 		org.setParentId(id);
-		if(StringUtils.isEmpty(org.getBusinessTypeId())) {
+		if (StringUtils.isEmpty(org.getBusinessTypeId())) {
 			org.setBusinessTypeId(parent.getBusinessTypeId());
 		}
 		return Result.newResult(orgRepository.save(org));
@@ -240,24 +240,20 @@ public class OrgController {
 	/**
 	 * @api {get} /orgs/tree 查询机构树
 	 * 
-	 * @apiName orgTree
+	 * @apiName orgTree 查询完整机构树
 	 * @apiGroup Org
 	 * @apiSuccess (Success) {Boolean} success 成功标识 <code>true</code>
 	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
-	 * @apiSuccess (Success) {Object} payload 机构列表
-	 * @apiSuccess (Success) {Number} payload.totalPages 总页数
-	 * @apiSuccess (Success) {Number} payload.totalElements 总记录数
-	 * @apiSuccess (Success) {Number} payload.numberOfElements 当前记录数
-	 * @apiSuccess (Success) {Object[]} payload.content 机构列表
-	 * @apiSuccess (Success) {String} payload.content.id 机构 id
-	 * @apiSuccess (Success) {String} payload.content.code 机构代码
-	 * @apiSuccess (Success) {String} payload.content.name 机构名称
-	 * @apiSuccess (Success) {String} payload.content.createTime 创建时间
-	 * @apiSuccess (Success) {Object[]} payload.content.childs 子机构
-	 * @apiSuccess (Success) {String} payload.content.childs.id 子机构 id
-	 * @apiSuccess (Success) {String} payload.content.childs.code 子机构代码
-	 * @apiSuccess (Success) {String} payload.content.childs.name 子机构名称
-	 * @apiSuccess (Success) {String} payload.content.childs.createTime 子机构创建时间
+	 * @apiSuccess (Success) {Object[]} payload 机构列表
+	 * @apiSuccess (Success) {String} payload.id 机构 id
+	 * @apiSuccess (Success) {String} payload.code 机构代码
+	 * @apiSuccess (Success) {String} payload.name 机构名称
+	 * @apiSuccess (Success) {String} payload.createTime 创建时间
+	 * @apiSuccess (Success) {Object[]} payload.childs 子机构
+	 * @apiSuccess (Success) {String} payload.childs.id 子机构 id
+	 * @apiSuccess (Success) {String} payload.childs.code 子机构代码
+	 * @apiSuccess (Success) {String} payload.childs.name 子机构名称
+	 * @apiSuccess (Success) {String} payload.childs.createTime 子机构创建时间
 	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
 	 * @apiError (Error) {String} responseCode 错误码
 	 * @apiError (Error) {String} responseMessage 错误消息
@@ -274,6 +270,39 @@ public class OrgController {
 		return Result.newResult(
 				orgs.stream().filter((o) -> o.getParentId() == null).sorted(Comparator.comparing(Org::getCode)).collect(
 						Collectors.toList()));
+	}
+
+	/**
+	 * @api {get} /orgs/tree/{id} 查询机构树（指定机构为Root节点）
+	 * 
+	 * @apiName specifiedOrgTree 查询指定 Root 节点的机构树
+	 * @apiGroup Org
+	 * @apiSuccess (Success) {Boolean} success 成功标识 <code>true</code>
+	 * @apiSuccess (Success) {String} responseCode 响应码 'SC0000'
+	 * @apiSuccess (Success) {Object} payload 机构
+	 * @apiSuccess (Success) {String} payload.id 机构 id
+	 * @apiSuccess (Success) {String} payload.code 机构代码
+	 * @apiSuccess (Success) {String} payload.name 机构名称
+	 * @apiSuccess (Success) {String} payload.createTime 创建时间
+	 * @apiSuccess (Success) {Object[]} payload.childs 子机构
+	 * @apiSuccess (Success) {String} payload.childs.id 子机构 id
+	 * @apiSuccess (Success) {String} payload.childs.code 子机构代码
+	 * @apiSuccess (Success) {String} payload.childs.name 子机构名称
+	 * @apiSuccess (Success) {String} payload.childs.createTime 子机构创建时间
+	 * @apiError (Error) {Boolean} success 业务成功标识 <code>false</code>
+	 * @apiError (Error) {String} responseCode 错误码
+	 * @apiError (Error) {String} responseMessage 错误消息
+	 */
+	@RequestMapping(path = "/orgs/tree/{id}", method = RequestMethod.GET)
+	public Result<Org> orgsTree(@PathVariable String id) {
+		List<Org> orgs = orgRepository.findAll();
+		Map<String, Org> orgMapping = orgs.stream().collect(Collectors.toMap(Org::getId, o -> o));
+		for (Org o : orgs) {
+			if (o.getParentId() != null) {
+				orgMapping.get(o.getParentId()).addChild(o);
+			}
+		}
+		return Result.newResult(orgMapping.get(id));
 	}
 
 	/**
