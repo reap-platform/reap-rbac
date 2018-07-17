@@ -6,6 +6,7 @@ import java.util.List;
 import org.reap.rbac.common.Constants;
 import org.reap.rbac.common.ErrorCodes;
 import org.reap.rbac.domain.BusinessType;
+import org.reap.rbac.domain.BusinessTypeFunctionRepository;
 import org.reap.rbac.domain.BusinessTypeRepository;
 import org.reap.rbac.domain.Function;
 import org.reap.rbac.domain.FunctionRepository;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,9 @@ public class BusinessTypeController {
 
 	@Autowired
 	private BusinessTypeRepository businessTypeRepository;
+	
+	@Autowired
+	private BusinessTypeFunctionRepository businessTypeFunctionRepository;
 	
 	@Autowired
 	private FunctionRepository functionRepository;
@@ -65,8 +70,10 @@ public class BusinessTypeController {
 	}
 
 	@RequestMapping(path = "/businessType/{id}", method = RequestMethod.DELETE)
+	@Transactional
 	public Result<?> delete(@PathVariable String id) {
 		businessTypeRepository.deleteById(id);
+		businessTypeFunctionRepository.deleteById_BusinessTypeId(id);
 		return Result.newResult();
 	}
 	

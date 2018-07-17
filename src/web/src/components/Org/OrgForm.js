@@ -65,8 +65,8 @@ const Component = ({
             {...formItemLayout}
             label="业务类型"
           >
-            {getFieldDecorator('businessTypeId', { rules: [{ message: '请选择业务类型' }] })(<Select style={{ width: 120 }}>
-              {businessTypes.map(businessType => <Option key={businessType.id} value={businessType.code}>{businessType.name}</Option>)}
+            {getFieldDecorator('businessTypeId', { rules: [{ message: '请选择业务类型' }] })(<Select>
+              {businessTypes.map(businessType => <Option key={businessType.id} value={businessType.id}>{businessType.name}</Option>)}
             </Select>)}
           </FormItem>
           <FormItem
